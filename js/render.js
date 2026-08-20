@@ -176,16 +176,66 @@ App.chips = function (dias) {
 };
 
 /* ------------------------------------------------------------
+   Ordenamiento de la tabla de proveedores
+   ------------------------------------------------------------ */
+
+/* Clave de la columna activa (data-sort) y dirección: 1 = asc, -1 = desc */
+App.sortKey = null;
+App.sortDir = 1;
+
+/* Prioridad de las frecuencias para la columna "Frecuencia" */
+const FREC_RANK = { semanal: 0, quincenal13: 1, quincenal24: 2, mensual: 3 };
+
+/* diasRank(dias): valor de orden de una lista de días. Se ordena
+   primero por la cantidad de días y luego por el día más temprano. */
+function diasRank(dias) {
+    if (!dias || !dias.length) return 0;
+    return dias.length * 10 + Math.min.apply(null, dias);
+}
+
+/* valOrden(p, k): valor comparable de un proveedor según la clave. */
+function valOrden(p, k) {
+    switch (k) {
+        case 'nombre': return p.nombre;
+        case 'frecuencia': return FREC_RANK[p.frecuencia] != null ? FREC_RANK[p.frecuencia] : 99;
+        case 'diasEnvio': return diasRank(p.diasEnvio);
+        case 'diasEntrega': return diasRank(p.diasEntrega);
+        case 'transito': return p.transito;
+        case 'anticipacion': return p.anticipacion;
+        case 'estricto': return p.estricto ? 1 : 0;
+        case 'gigante': return p.gigante ? 1 : 0;
+        default: return 0;
+    }
+}
+
+/* provCmp(a, b): comparador usado por renderProveedores. */
+App.provCmp = function (a, b) {
+    const k = App.sortKey;
+    if (!k) return 0;
+    const va = valOrden(a, k);
+    const vb = valOrden(b, k);
+    let r = typeof va === 'string' ? va.localeCompare(vb, 'es') : va - vb;
+    return r * App.sortDir;
+};
+
+/* ------------------------------------------------------------
    renderProveedores(): dibuja la tabla de la pantalla de
-   proveedores, aplicando el filtro de búsqueda por nombre.
+   proveedores, aplicando el filtro de búsqueda y el orden actual.
    ------------------------------------------------------------ */
 App.renderProveedores = function () {
     const filtro = (document.getElementById('filtroProveedores').value || '').toLowerCase().trim();
     const tb = document.getElementById('tbodyProveedores');
-    let html = '';
+    // Filtra por nombre y luego ordena una copia (no altera el estado).
+    const lista = [];
     for (let i = 0; i < App.proveedores.length; i++) {
         const p = App.proveedores[i];
         if (filtro && p.nombre.toLowerCase().indexOf(filtro) === -1) continue;
+        lista.push(p);
+    }
+    if (App.sortKey) lista.sort(App.provCmp);
+    let html = '';
+    for (let i = 0; i < lista.length; i++) {
+        const p = lista[i];
         html += '<tr>' +
             '<td>' + App.esc(p.nombre) + '</td>' +
             '<td>' + App.FRECUENCIA_LABEL[p.frecuencia] + '</td>' +

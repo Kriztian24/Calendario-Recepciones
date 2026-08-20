@@ -68,11 +68,51 @@ document.getElementById('sideTab').addEventListener('click', function () { App.s
 document.getElementById('sideClose').addEventListener('click', function () { App.setPanel(false); });
 
 /* ------------------------------------------------------------
-   Arranque
+   Sincronización en tiempo real y arranque
    ------------------------------------------------------------ */
 
-/* init(): render inicial de toda la interfaz. */
-App.init = function () {
+/* Estado de conexión con el servidor */
+App.online = true;
+
+/* connectSocket(): se suscribe al canal del servidor (Server-Sent
+   Events). Cuando otro equipo cambia la base de datos, la pantalla
+   se actualiza al instante y los proveedores modificados se
+   sombrean brevemente. El eco de nuestros propios guardados se
+   ignora (no hay diferencia contra el estado local). */
+App.connectSocket = function () {
+    if (typeof EventSource === 'undefined') return;
+    const es = new EventSource('/api/stream');
+    es.onmessage = function (e) {
+        try {
+            const data = JSON.parse(e.data);
+            if (!data || !Array.isArray(data.proveedores)) return;
+            const incoming = data.proveedores.map(App.normalize);
+            const cambiados = App.diffProveedores(App.proveedores, incoming);
+            App.proveedores = incoming;
+            App.cache();
+            App.renderCalendario();
+            App.renderProveedores();
+            // Sin diferencias = eco de nuestro propio guardado: no notificar.
+            if (!cambiados.size) return;
+            // Cambio de otro equipo: sombrear los proveedores afectados.
+            cambiados.forEach(function (id) {
+                const items = document.querySelectorAll('.supplier[data-id="' + id + '"]');
+                for (let i = 0; i < items.length; i++) items[i].classList.add('flash-update');
+            });
+        } catch (err) {
+            // Mensaje inválido: se ignora.
+        }
+    };
+    // Si la red se cae, EventSource se reconecta solo.
+};
+
+/* init(): carga la base de datos (servidor o caché local) y dibuja
+   toda la interfaz. */
+App.init = async function () {
+    const online = await App.loadRemote();
+    App.online = online;
+    if (!online) App.toast('⚠️ Sin conexión al servidor: trabajando en modo local.');
+    App.connectSocket();
     App.renderCalendario();
     App.renderProveedores();
 };

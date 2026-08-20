@@ -1,14 +1,18 @@
 /* ============================================================
    estado.js - Estado de la aplicación y reglas de negocio
    ------------------------------------------------------------
-   - Carga/guarda la base de datos en localStorage.
+   - Carga/guarda la base de datos en el SERVICIDOR compartido
+     (servidor.js -> db.json) para que todos los equipos vean lo
+     mismo en tiempo real.
+   - El localStorage queda solo como caché de respaldo (modo sin
+     conexión).
    - Normaliza los proveedores (valida y completa los campos).
    - Define las reglas de envío, entrega y anticipación que usa
      el drag & drop.
    ============================================================ */
 var App = window.App = window.App || {};
 
-/* Clave con la que se persiste la base de datos en localStorage */
+/* Clave con la que se guarda la copia local de respaldo */
 App.KEY = 'calendarioComprasDB';
 
 /* ------------------------------------------------------------
@@ -44,10 +48,19 @@ App.normalize = function (p) {
 };
 
 /* ------------------------------------------------------------
-   load(): lee la base de datos desde localStorage.
-   Si no existe (o el JSON está corrupto) usa la semilla.
+   Carga de datos
+   La base de datos vive en el servidor (db.json) y se comparte
+   entre todos los equipos. El localStorage queda como respaldo
+   para cuando no hay servidor disponible.
    ------------------------------------------------------------ */
-App.load = function () {
+
+/* Proveedores actuales (estado en memoria de toda la app).
+   Se llenan con App.loadRemote() durante el arranque. */
+App.proveedores = [];
+
+/* loadLocal(): lee la caché de localStorage; si no existe (o el
+   JSON está corrupto) usa la semilla incrustada. */
+App.loadLocal = function () {
     try {
         const raw = localStorage.getItem(App.KEY);
         if (raw) {
@@ -60,14 +73,77 @@ App.load = function () {
     return App.SEED_PROVEEDORES.map(App.normalize);
 };
 
-/* Proveedores actuales (estado en memoria de toda la app) */
-App.proveedores = App.load();
+/* cache(): guarda una copia local (respaldo offline). */
+App.cache = function () {
+    localStorage.setItem(App.KEY, JSON.stringify(App.proveedores));
+};
+
+/* loadRemote(): intenta leer la base de datos del servidor.
+   Devuelve true si lo logró; si no, usa la caché local. */
+App.loadRemote = async function () {
+    try {
+        const res = await fetch('/api/proveedores', { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        App.proveedores = (await res.json()).map(App.normalize);
+        App.cache();
+        return true;
+    } catch (e) {
+        App.proveedores = App.loadLocal();
+        return false;
+    }
+};
 
 /* ------------------------------------------------------------
-   save(): persiste el estado actual en localStorage.
+   diffProveedores(prev, incoming): devuelve un Set con los ids de
+   los proveedores que cambiaron entre dos versiones de la base de
+   datos (nuevos, eliminados o con campos distintos). Se usa para
+   distinguir el eco de nuestro propio guardado (sin diferencias)
+   de un cambio real hecho por otro equipo.
    ------------------------------------------------------------ */
+App.diffProveedores = function (prev, incoming) {
+    const cambiados = new Set();
+    const porId = {};
+    for (let i = 0; i < incoming.length; i++) porId[incoming[i].id] = incoming[i];
+    for (let i = 0; i < prev.length; i++) {
+        const q = porId[prev[i].id];
+        if (!q || JSON.stringify(q) !== JSON.stringify(prev[i])) cambiados.add(prev[i].id);
+    }
+    const prevIds = {};
+    for (let i = 0; i < prev.length; i++) prevIds[prev[i].id] = true;
+    for (let i = 0; i < incoming.length; i++) {
+        if (!prevIds[incoming[i].id]) cambiados.add(incoming[i].id);
+    }
+    return cambiados;
+};
+
+/* ------------------------------------------------------------
+   save(): persiste el estado actual en el servidor.
+   Las llamadas se encadenan para no enviar POST fuera de orden.
+   Si el servidor no responde, el cambio queda solo en la caché
+   local (modo sin conexión).
+   ------------------------------------------------------------ */
+App._saveChain = Promise.resolve();
 App.save = function () {
-    localStorage.setItem(App.KEY, JSON.stringify(App.proveedores));
+    App.cache();
+    const snapshot = JSON.stringify(App.proveedores);
+    App._saveChain = App._saveChain.then(async function () {
+        try {
+            const res = await fetch('/api/proveedores', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: snapshot
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return true;
+        } catch (e) {
+            if (App.online) {
+                App.online = false;
+                App.toast('⚠️ Sin conexión al servidor: el cambio se guardó solo en este equipo.');
+            }
+            return false;
+        }
+    });
+    return App._saveChain;
 };
 
 /* ------------------------------------------------------------

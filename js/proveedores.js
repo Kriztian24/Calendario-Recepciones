@@ -201,6 +201,25 @@
     // Filtro de búsqueda por nombre.
     document.getElementById('filtroProveedores').addEventListener('input', App.renderProveedores);
 
+    // Ordenamiento por columnas: clic alterna asc / desc.
+    // La flecha del encabezado activo indica la dirección actual.
+    const ths = document.querySelectorAll('#tablaProveedores th[data-sort]');
+    for (let i = 0; i < ths.length; i++) {
+        ths[i].addEventListener('click', function () {
+            const k = this.dataset.sort;
+            if (App.sortKey === k) {
+                App.sortDir = -App.sortDir; // mismo clic -> invertir
+            } else {
+                App.sortKey = k; // nueva columna -> asc primero
+                App.sortDir = 1;
+            }
+            const inds = document.querySelectorAll('#tablaProveedores .sort-ind');
+            for (let j = 0; j < inds.length; j++) inds[j].textContent = '';
+            this.querySelector('.sort-ind').textContent = App.sortDir === 1 ? '▲' : '▼';
+            App.renderProveedores();
+        });
+    }
+
     /* ----------------------------------------------------------
        Exportar / Importar / Restaurar
        ---------------------------------------------------------- */
@@ -246,8 +265,15 @@
         reader.readAsText(file);
     });
 
-    /* Restaurar original: vuelve a la semilla incrustada. */
+    /* Restaurar original: pide la clave (de js/clave.js) y solo si
+       coincide vuelve a la semilla incrustada. */
     document.getElementById('btnRestaurar').addEventListener('click', function () {
+        const clave = prompt('Ingresa la clave para restaurar la base de datos original:');
+        if (clave === null) return; // cancelado
+        if ((clave || '').trim() !== App.CLAVE) {
+            App.toast('❌ Clave incorrecta. No se restauró la base de datos.');
+            return;
+        }
         if (!confirm('¿Restaurar la base de datos original? Se perderán los cambios.')) return;
         App.proveedores = App.SEED_PROVEEDORES.map(App.normalize);
         App.save();

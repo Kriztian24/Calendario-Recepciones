@@ -79,22 +79,27 @@
         <div class="db-toolbar">
             <input type="text" id="filtroProveedores" placeholder="🔍 Buscar proveedor...">
             <button class="btn btn-primary" id="btnAgregar">+ Agregar proveedor</button>
-            <button class="btn" id="btnExportar">⬇️ Exportar JSON</button>
-            <button class="btn" id="btnImportar">⬆️ Importar JSON</button>
-            <input type="file" id="importFile" accept=".json" style="display:none;">
-            <button class="btn btn-danger" id="btnRestaurar">♻️ Restaurar original</button>
         </div>
+        <details class="db-avanzado">
+            <summary>⚙️ Opciones avanzadas</summary>
+            <div class="db-avanzado-buttons">
+                <button class="btn" id="btnExportar">⬇️ Exportar JSON</button>
+                <button class="btn" id="btnImportar">⬆️ Importar JSON</button>
+                <input type="file" id="importFile" accept=".json" style="display:none;">
+                <button class="btn btn-danger" id="btnRestaurar">♻️ Restaurar original</button>
+            </div>
+        </details>
         <table id="tablaProveedores">
             <thead>
                 <tr>
-                    <th>Proveedor</th>
-                    <th>Frecuencia</th>
-                    <th>Días de Envío (recibe pedido)</th>
-                    <th>Días de Entrega</th>
-                    <th>Tránsito</th>
-                    <th>Antic.</th>
-                    <th>Estricto</th>
-                    <th>Gigante</th>
+                    <th class="sortable" data-sort="nombre">Proveedor <span class="sort-ind"></span></th>
+                    <th class="sortable" data-sort="frecuencia">Frecuencia <span class="sort-ind"></span></th>
+                    <th class="sortable" data-sort="diasEnvio">Días de Envío (recibe pedido) <span class="sort-ind"></span></th>
+                    <th class="sortable" data-sort="diasEntrega">Días de Entrega <span class="sort-ind"></span></th>
+                    <th class="sortable" data-sort="transito">Tránsito <span class="sort-ind"></span></th>
+                    <th class="sortable" data-sort="anticipacion">Antic. <span class="sort-ind"></span></th>
+                    <th class="sortable" data-sort="estricto">Estricto <span class="sort-ind"></span></th>
+                    <th class="sortable" data-sort="gigante">Gigante <span class="sort-ind"></span></th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -176,6 +181,7 @@
 
     <!-- Scripts en orden: datos -> estado -> render -> drag -> proveedores -> app -->
     <script src="js/datos.js"></script>
+    <script src="js/clave.js"></script>
     <script src="js/estado.js"></script>
     <script src="js/render.js"></script>
     <script src="js/drag.js"></script>
