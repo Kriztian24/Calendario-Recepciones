@@ -154,6 +154,9 @@ td:first-child {
         }
         .supplier.gigante:hover { background-color: #ffe9a8; }
         .supplier.dragging { opacity: 0.4; }
+        /* Línea de inserción al reordenar dentro de la celda */
+        .supplier.insert-before { box-shadow: inset 0 2px 0 #007bff; }
+        .supplier.insert-after { box-shadow: inset 0 -2px 0 #007bff; }
         /* Sombreado breve cuando otro equipo actualiza un proveedor */
         @keyframes flash-update {
             0% { background-color: #cfe2ff; box-shadow: 0 0 0 2px rgba(13,110,253,0.45); }

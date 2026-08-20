@@ -42,6 +42,10 @@ App.normalize = function (p) {
         : +p.posDiaEntrega;
     // La recepción movida a mano conserva su bandera.
     p.sobrescribirEntrega = !!p.sobrescribirEntrega;
+    // Orden de aparición dentro de cada calendario (se usa para
+    // reordenar con drag & drop dentro de una celda).
+    p.ordenEnvio = p.ordenEnvio == null ? 0 : +p.ordenEnvio;
+    p.ordenEntrega = p.ordenEntrega == null ? 0 : +p.ordenEntrega;
     // Genera un id único si no existe.
     if (!p.id) p.id = App.slug(p.nombre || 'proveedor') + '-' + Date.now().toString(36);
     return p;
@@ -91,6 +95,53 @@ App.loadRemote = async function () {
         App.proveedores = App.loadLocal();
         return false;
     }
+};
+
+/* ------------------------------------------------------------
+   Orden interno de cada calendario (reordenar con drag & drop)
+   ------------------------------------------------------------ */
+
+/* itemsDelDia(tipo, dia, col): proveedores de una celda en su orden
+   actual (campo ordenEnvio/ordenEntrega). */
+App.itemsDelDia = function (tipo, dia, col) {
+    const key = tipo === 'envio' ? 'posDiaEnvio' : 'posDiaEntrega';
+    const ordenKey = tipo === 'envio' ? 'ordenEnvio' : 'ordenEntrega';
+    return App.proveedores
+        .filter(function (p) {
+            return App.colFor(p.frecuencia) === col && p[key] === dia;
+        })
+        .sort(function (a, b) { return a[ordenKey] - b[ordenKey]; });
+};
+
+/* renumerar(tipo, lista): asigna 0..n como orden de la lista. */
+App.renumerar = function (tipo, lista) {
+    const ordenKey = tipo === 'envio' ? 'ordenEnvio' : 'ordenEntrega';
+    for (let i = 0; i < lista.length; i++) lista[i][ordenKey] = i;
+};
+
+/* reordenar(tipo, dia, id, refId, antes): recoloca al proveedor
+   "id" dentro de su celda, antes o después del proveedor de
+   referencia "refId", y renumerar el orden de la celda. */
+App.reordenar = function (tipo, dia, id, refId, antes) {
+    const col = App.colFor(App.getById(id).frecuencia);
+    const lista = App.itemsDelDia(tipo, dia, col).filter(function (p) { return p.id !== id; });
+    if (refId) {
+        const ix = lista.findIndex(function (p) { return p.id === refId; });
+        if (ix !== -1) lista.splice(antes ? ix : ix + 1, 0, App.getById(id));
+    } else {
+        lista.push(App.getById(id));
+    }
+    App.renumerar(tipo, lista);
+};
+
+/* acomodarEnCelda(tipo, dia, id): coloca al proveedor "id" al final
+   de su celda. Se usa al moverlo a un día nuevo para que quede
+   detrás de los que ya estaban ahí. */
+App.acomodarEnCelda = function (tipo, dia, id) {
+    const col = App.colFor(App.getById(id).frecuencia);
+    const lista = App.itemsDelDia(tipo, dia, col).filter(function (p) { return p.id !== id; });
+    lista.push(App.getById(id));
+    App.renumerar(tipo, lista);
 };
 
 /* ------------------------------------------------------------

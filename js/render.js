@@ -124,9 +124,7 @@ App.renderPedidos = function () {
             '<span class="resumen">' + App.resumenHtml(App.resumenDia('envio', dia)) + '</span></td>';
         for (let c = 0; c < App.COLS.length; c++) {
             const col = App.COLS[c];
-            const items = App.proveedores.filter(function (p) {
-                return App.colFor(p.frecuencia) === col && p.posDiaEnvio === dia;
-            });
+            const items = App.itemsDelDia('envio', dia, col);
             html += '<td data-col="' + col + '" data-dia="' + dia + '">' +
                 App.cellHtml(items, 'envio', col, dia, App.VACIOS_PEDIDOS) + '</td>';
         }
@@ -148,9 +146,7 @@ App.renderRecepcion = function () {
             '<span class="resumen">' + App.resumenHtml(App.resumenDia('entrega', dia)) + '</span></td>';
         for (let c = 0; c < App.COLS.length; c++) {
             const col = App.COLS[c];
-            const items = App.proveedores.filter(function (p) {
-                return App.colFor(p.frecuencia) === col && p.posDiaEntrega === dia;
-            });
+            const items = App.itemsDelDia('entrega', dia, col);
             html += '<td data-col="' + col + '" data-dia="' + dia + '">' +
                 App.cellHtml(items, 'entrega', col, dia, App.VACIOS_RECEPCION) + '</td>';
         }

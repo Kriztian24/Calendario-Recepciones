@@ -20,7 +20,9 @@
     "nota": "Pedido obligatorio el sábado por la mañana",
     "posDiaEnvio": 6,
     "posDiaEntrega": 1,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "la-chilenita",
@@ -39,7 +41,9 @@
     "nota": "Pedido obligatorio sábado",
     "posDiaEnvio": 6,
     "posDiaEntrega": 1,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 4,
+    "ordenEntrega": 0
   },
   {
     "id": "zambrano-figueroa",
@@ -58,7 +62,9 @@
     "nota": "Pedido obligatorio sábado mañana",
     "posDiaEnvio": 6,
     "posDiaEntrega": 1,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 2,
+    "ordenEntrega": 0
   },
   {
     "id": "heineken",
@@ -86,7 +92,9 @@
     "nota": "Atiende orden realizada el domingo para entrega lunes",
     "posDiaEnvio": 0,
     "posDiaEntrega": 1,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "la-fabril",
@@ -111,7 +119,9 @@
     "nota": "Prep Domingo -> Envía Lunes para descongestionar recepción el Jueves",
     "posDiaEnvio": 1,
     "posDiaEntrega": 5,
-    "sobrescribirEntrega": true
+    "sobrescribirEntrega": true,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "chicaiza",
@@ -130,7 +140,9 @@
     "nota": "Lead time 8 horas (Entrega mismo día)",
     "posDiaEnvio": 1,
     "posDiaEntrega": 1,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "crearvida",
@@ -149,7 +161,9 @@
     "nota": "Prep Domingo -> Envía Lunes",
     "posDiaEnvio": 1,
     "posDiaEntrega": 2,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "lituma",
@@ -168,7 +182,9 @@
     "nota": "Prep Domingo -> Envía Lunes",
     "posDiaEnvio": 1,
     "posDiaEntrega": 2,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "dipor",
@@ -187,7 +203,9 @@
     "nota": "",
     "posDiaEnvio": 1,
     "posDiaEntrega": 2,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "jefamicorp",
@@ -207,7 +225,9 @@
     "nota": "",
     "posDiaEnvio": 1,
     "posDiaEntrega": 3,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "inalecsa",
@@ -226,7 +246,9 @@
     "nota": "Prep Domingo -> Envía Lunes",
     "posDiaEnvio": 1,
     "posDiaEntrega": 3,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "pydaco",
@@ -246,7 +268,9 @@
     "nota": "Lunes pedido máximo 3:00pm",
     "posDiaEnvio": 1,
     "posDiaEntrega": 2,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "bimbo",
@@ -265,7 +289,9 @@
     "nota": "Martes pedido estricto",
     "posDiaEnvio": 2,
     "posDiaEntrega": 3,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "anahi-02",
@@ -286,7 +312,9 @@
     "nota": "",
     "posDiaEnvio": 2,
     "posDiaEntrega": 3,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "deanova",
@@ -309,7 +337,9 @@
     "nota": "Martes haría pedido",
     "posDiaEnvio": 2,
     "posDiaEntrega": 3,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "danec",
@@ -336,7 +366,9 @@
     "nota": "Movido a Miércoles para liberar recepción del Jueves",
     "posDiaEnvio": 3,
     "posDiaEntrega": 5,
-    "sobrescribirEntrega": true
+    "sobrescribirEntrega": true,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "arreaga-ayala",
@@ -355,7 +387,9 @@
     "nota": "",
     "posDiaEnvio": 3,
     "posDiaEntrega": 4,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "panificadora-industrial",
@@ -374,7 +408,9 @@
     "nota": "",
     "posDiaEnvio": 3,
     "posDiaEntrega": 4,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "villegas-fajardo",
@@ -393,7 +429,9 @@
     "nota": "",
     "posDiaEnvio": 3,
     "posDiaEntrega": 4,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "saliuper",
@@ -412,7 +450,9 @@
     "nota": "",
     "posDiaEnvio": 3,
     "posDiaEntrega": 4,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "tecnoideas",
@@ -431,7 +471,9 @@
     "nota": "",
     "posDiaEnvio": 3,
     "posDiaEntrega": 4,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "ac-bebidas",
@@ -452,7 +494,9 @@
     "nota": "Pedido en borrador Miércoles, enviado Jueves para entrega Lunes Isidro PC",
     "posDiaEnvio": 4,
     "posDiaEntrega": 1,
-    "sobrescribirEntrega": true
+    "sobrescribirEntrega": true,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "dazulthi",
@@ -471,7 +515,9 @@
     "nota": "Prep Miércoles ➔ Envía Jueves",
     "posDiaEnvio": 4,
     "posDiaEntrega": 5,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "gruvalcorp",
@@ -490,7 +536,9 @@
     "nota": "Prep Miércoles ➔ Envía Jueves",
     "posDiaEnvio": 4,
     "posDiaEntrega": 5,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "piggis",
@@ -509,7 +557,9 @@
     "nota": "Prep Miércoles ➔ Envía Jueves",
     "posDiaEnvio": 4,
     "posDiaEntrega": 5,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "cafrilosa",
@@ -528,7 +578,9 @@
     "nota": "Prep Miércoles ➔ Envía Jueves",
     "posDiaEnvio": 4,
     "posDiaEntrega": 5,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "reylacteos",
@@ -547,7 +599,9 @@
     "nota": "Prep Miércoles ➔ Envía Jueves",
     "posDiaEnvio": 4,
     "posDiaEntrega": 5,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "foproca",
@@ -566,7 +620,9 @@
     "nota": "Prep Miércoles ➔ Envía Jueves",
     "posDiaEnvio": 4,
     "posDiaEntrega": 5,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "cerela",
@@ -585,7 +641,9 @@
     "nota": "Lead time 8 horas (Mismo día)",
     "posDiaEnvio": 5,
     "posDiaEntrega": 5,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "anahi-01",
@@ -605,7 +663,9 @@
     "nota": "Pedido sábado mañana para entrega Lunes",
     "posDiaEnvio": 6,
     "posDiaEntrega": 1,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 3,
+    "ordenEntrega": 0
   },
   {
     "id": "alicorp-ecuador-s-a-mt0xybhz",
@@ -629,7 +689,9 @@
     "nota": "Pedido sábado mañana para entrega Lunes",
     "posDiaEnvio": 6,
     "posDiaEntrega": 1,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 1,
+    "ordenEntrega": 0
   },
   {
     "id": "godoy-ruiz",
@@ -649,7 +711,9 @@
     "nota": "Pedido sábado mañana",
     "posDiaEnvio": 6,
     "posDiaEntrega": 1,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "viteri-briones",
@@ -668,7 +732,9 @@
     "nota": "Viernes visita obligatoria ➔ Entrega Martes fijo",
     "posDiaEnvio": 5,
     "posDiaEntrega": 2,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "unilever",
@@ -693,7 +759,9 @@
     "nota": "Prep Martes ➔ Envía Miércoles para entrega Viernes",
     "posDiaEnvio": 3,
     "posDiaEntrega": 5,
-    "sobrescribirEntrega": true
+    "sobrescribirEntrega": true,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "induquiclor",
@@ -712,7 +780,9 @@
     "nota": "Prep Miércoles ➔ Envía Jueves para entrega Lunes (Ruta Daule)",
     "posDiaEnvio": 4,
     "posDiaEntrega": 1,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "surtitodo",
@@ -731,7 +801,9 @@
     "nota": "Martes pedido estricto",
     "posDiaEnvio": 2,
     "posDiaEntrega": 3,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "pepsico",
@@ -750,7 +822,9 @@
     "nota": "Prep Domingo ➔ Envía Lunes",
     "posDiaEnvio": 1,
     "posDiaEntrega": 3,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "macias-macias",
@@ -771,7 +845,9 @@
     "nota": "Prep Domingo ➔ Envía Lunes",
     "posDiaEnvio": 1,
     "posDiaEntrega": 3,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "lacteos-san-antonio",
@@ -790,7 +866,9 @@
     "nota": "",
     "posDiaEnvio": 2,
     "posDiaEntrega": 4,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "colombina",
@@ -809,7 +887,9 @@
     "nota": "Martes pedido estricto",
     "posDiaEnvio": 2,
     "posDiaEntrega": 5,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "villavicencio",
@@ -829,7 +909,9 @@
     "nota": "",
     "posDiaEnvio": 2,
     "posDiaEntrega": 5,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "alpina",
@@ -849,7 +931,9 @@
     "nota": "Miércoles haría pedido",
     "posDiaEnvio": 3,
     "posDiaEntrega": 5,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "dacendi",
@@ -869,7 +953,9 @@
     "nota": "",
     "posDiaEnvio": 3,
     "posDiaEntrega": 5,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "segarra-bermeo",
@@ -889,7 +975,9 @@
     "nota": "Prep Miércoles ➔ Envía Jueves",
     "posDiaEnvio": 4,
     "posDiaEntrega": 6,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "nestle",
@@ -912,7 +1000,9 @@
     "nota": "Prep Jueves ➔ Envía Viernes en borrador automático",
     "posDiaEnvio": 5,
     "posDiaEntrega": 1,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "id": "briones-contreras",
@@ -931,7 +1021,9 @@
     "nota": "Prep Jueves ➔ Envía Viernes en borrador automático",
     "posDiaEnvio": 5,
     "posDiaEntrega": 1,
-    "sobrescribirEntrega": false
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   },
   {
     "nombre": "Kristian Aguayo",
@@ -951,9 +1043,11 @@
     "estricto": false,
     "gigante": false,
     "nota": "",
-    "posDiaEnvio": 3,
-    "posDiaEntrega": 4,
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 2,
     "sobrescribirEntrega": false,
-    "id": "kristian-aguayo-mt0xplei"
+    "id": "kristian-aguayo-mt0xplei",
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
   }
 ]
