@@ -1,0 +1,217 @@
+/* ============================================================
+   proveedores.js - Mantenimiento de proveedores
+   ------------------------------------------------------------
+   - Modal de alta/edición de un proveedor.
+   - Eliminación con confirmación.
+   - Exportar / Importar / Restaurar la base de datos (JSON).
+   Todo el estado interno del formulario queda privado (IIFE).
+   ============================================================ */
+(function () {
+
+    /* id del proveedor en edición (null = modo alta) */
+    let editandoId = null;
+
+    /* ----------------------------------------------------------
+       Construcción del formulario del modal
+       ---------------------------------------------------------- */
+
+    /* renderDayChecks(contId, selected): dibuja los checkboxes de
+       los 7 días (Dom..Sáb) marcando los días "selected". */
+    function renderDayChecks(contId, selected) {
+        const cont = document.getElementById(contId);
+        const sel = selected || [];
+        cont.innerHTML = App.DIAS.map(function (d) {
+            const on = sel.indexOf(d.idx) !== -1 ? ' checked' : '';
+            return '<label class="day-check"><input type="checkbox" value="' + d.idx + '"' + on + '>' +
+                d.abbr + '</label>';
+        }).join('');
+    }
+
+    /* fillPosSelects(p): llena los selects de posición actual
+       (pedido y recepción) con los 7 días de la semana. */
+    function fillPosSelects(p) {
+        const opts = App.DIAS.map(function (d) {
+            return '<option value="' + d.idx + '">' + d.nombre + '</option>';
+        }).join('');
+        const pe = document.getElementById('fPosEnvio');
+        const pr = document.getElementById('fPosEntrega');
+        pe.innerHTML = opts;
+        pr.innerHTML = opts;
+        pe.value = p.posDiaEnvio;
+        pr.value = p.posDiaEntrega;
+    }
+
+    /* checkedVals(id): devuelve los índices de los días marcados
+       en un grupo de checkboxes. */
+    function checkedVals(id) {
+        return Array.prototype.map.call(
+            document.querySelectorAll('#' + id + ' input:checked'),
+            function (c) { return +c.value; }
+        );
+    }
+
+    /* ----------------------------------------------------------
+       Apertura y cierre del modal
+       ---------------------------------------------------------- */
+
+    /* openModal(p): abre el modal en modo alta (p = null) o edición. */
+    App.openModal = function (p) {
+        editandoId = p ? p.id : null;
+        document.getElementById('modalTitulo').textContent =
+            editandoId ? 'Editar proveedor' : 'Nuevo proveedor';
+        // Valores por defecto para el modo alta.
+        const def = { frecuencia: 'semanal', transito: 1, anticipacion: 0, estricto: false, gigante: false, nota: '' };
+        const v = Object.assign(def, p || {});
+        document.getElementById('fNombre').value = v.nombre || '';
+        document.getElementById('fFrecuencia').value = v.frecuencia;
+        document.getElementById('fTransito').value = v.transito;
+        document.getElementById('fAnticipacion').value = v.anticipacion;
+        document.getElementById('fEstricto').checked = v.estricto;
+        document.getElementById('fGigante').checked = v.gigante;
+        document.getElementById('fNota').value = v.nota || '';
+        renderDayChecks('fDiasEnvio', v.diasEnvio);
+        renderDayChecks('fDiasEntrega', v.diasEntrega);
+        fillPosSelects(v);
+        document.getElementById('modal').classList.remove('hidden');
+    };
+
+    /* cerrarModal(): oculta el modal */
+    function cerrarModal() {
+        document.getElementById('modal').classList.add('hidden');
+        editandoId = null;
+    }
+
+    /* ----------------------------------------------------------
+       Guardar / Eliminar
+       ---------------------------------------------------------- */
+
+    /* guardar(): lee el formulario, valida y guarda (nuevo o editado). */
+    function guardar() {
+        const nombre = document.getElementById('fNombre').value.trim();
+        if (!nombre) { App.toast('⚠️ Escribe el nombre del proveedor.'); return; }
+        const frecuencia = document.getElementById('fFrecuencia').value;
+        const diasEnvio = checkedVals('fDiasEnvio');
+        const diasEntrega = checkedVals('fDiasEntrega');
+        if (!diasEnvio.length) { App.toast('⚠️ Marca al menos un día de envío.'); return; }
+        if (!diasEntrega.length) { App.toast('⚠️ Marca al menos un día de entrega.'); return; }
+        const transito = +document.getElementById('fTransito').value;
+        const anticipacion = +document.getElementById('fAnticipacion').value;
+        const datos = {
+            nombre: nombre,
+            frecuencia: frecuencia,
+            diasEnvio: diasEnvio,
+            diasEntrega: diasEntrega,
+            transito: isNaN(transito) ? 1 : transito,
+            anticipacion: isNaN(anticipacion) ? 0 : anticipacion,
+            estricto: document.getElementById('fEstricto').checked,
+            gigante: document.getElementById('fGigante').checked,
+            nota: document.getElementById('fNota').value.trim(),
+            posDiaEnvio: +document.getElementById('fPosEnvio').value,
+            posDiaEntrega: +document.getElementById('fPosEntrega').value,
+            sobrescribirEntrega: false
+        };
+        if (editandoId) {
+            // Edición: se conserva el id y se actualizan los campos.
+            const p = App.getById(editandoId);
+            Object.assign(p, App.normalize(datos));
+            App.toast('💾 ' + p.nombre + ' actualizado.');
+        } else {
+            // Alta: se crea un proveedor nuevo.
+            const nuevo = App.normalize(datos);
+            App.proveedores.push(nuevo);
+            App.toast('✅ ' + nuevo.nombre + ' agregado.');
+        }
+        App.save();
+        App.renderCalendario();
+        App.renderProveedores();
+        cerrarModal();
+    }
+
+    /* eliminarProveedor(id): elimina con confirmación. */
+    function eliminarProveedor(id) {
+        const p = App.getById(id);
+        if (!p) return;
+        if (!confirm('¿Eliminar "' + p.nombre + '"?')) return;
+        App.proveedores = App.proveedores.filter(function (x) { return x.id !== id; });
+        App.save();
+        App.renderCalendario();
+        App.renderProveedores();
+        App.toast('🗑️ ' + p.nombre + ' eliminado.');
+    }
+
+    /* ----------------------------------------------------------
+       Listeners del modal
+       ---------------------------------------------------------- */
+    document.getElementById('btnAgregar').addEventListener('click', function () { App.openModal(null); });
+    document.getElementById('btnCancelar').addEventListener('click', cerrarModal);
+    document.getElementById('btnGuardar').addEventListener('click', guardar);
+    // Clic en el fondo oscuro cierra el modal.
+    document.getElementById('modal').addEventListener('click', function (e) {
+        if (e.target === this) cerrarModal();
+    });
+    // Delegación: botones Editar / Eliminar de la tabla de proveedores.
+    document.addEventListener('click', function (e) {
+        const ed = e.target.closest ? e.target.closest('[data-edit]') : null;
+        if (ed) { App.openModal(App.getById(ed.dataset.edit)); return; }
+        const del = e.target.closest ? e.target.closest('[data-del]') : null;
+        if (del) eliminarProveedor(del.dataset.del);
+    });
+    // Filtro de búsqueda por nombre.
+    document.getElementById('filtroProveedores').addEventListener('input', App.renderProveedores);
+
+    /* ----------------------------------------------------------
+       Exportar / Importar / Restaurar
+       ---------------------------------------------------------- */
+
+    /* Exportar: descarga la base de datos como archivo JSON. */
+    document.getElementById('btnExportar').addEventListener('click', function () {
+        const blob = new Blob([JSON.stringify(App.proveedores, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'calendario-proveedores.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        App.toast('📤 Base de datos exportada.');
+    });
+
+    /* Importar: dispara el input de archivo oculto. */
+    document.getElementById('btnImportar').addEventListener('click', function () {
+        document.getElementById('importFile').click();
+    });
+
+    /* Importar (archivo elegido): reemplaza la base de datos. */
+    document.getElementById('importFile').addEventListener('change', function (e) {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function () {
+            try {
+                const arr = JSON.parse(reader.result);
+                if (!Array.isArray(arr)) throw new Error('formato');
+                App.proveedores = arr.map(App.normalize);
+                App.save();
+                App.renderCalendario();
+                App.renderProveedores();
+                App.toast('📥 Base de datos importada (' + arr.length + ' proveedores).');
+            } catch (err) {
+                App.toast('❌ El archivo no es un JSON válido.');
+            }
+            e.target.value = '';
+        };
+        reader.readAsText(file);
+    });
+
+    /* Restaurar original: vuelve a la semilla incrustada. */
+    document.getElementById('btnRestaurar').addEventListener('click', function () {
+        if (!confirm('¿Restaurar la base de datos original? Se perderán los cambios.')) return;
+        App.proveedores = App.SEED_PROVEEDORES.map(App.normalize);
+        App.save();
+        App.renderCalendario();
+        App.renderProveedores();
+        App.toast('♻️ Base de datos restaurada a la versión original.');
+    });
+
+})();

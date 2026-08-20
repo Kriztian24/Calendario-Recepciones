@@ -1,0 +1,169 @@
+/* ============================================================
+   render.js - Generación del HTML de los calendarios y de la
+   tabla de proveedores a partir del estado (App.proveedores).
+   ============================================================ */
+var App = window.App = window.App || {};
+
+/* ------------------------------------------------------------
+   itemEnvio(p): HTML de un proveedor en el calendario de
+   pedidos. Muestra nombre, día de llegada, banderas (*Estricto,
+   gigante) y su nota/prep.
+   ------------------------------------------------------------ */
+App.itemEnvio = function (p) {
+    let html = '<li class="supplier' + (p.gigante ? ' gigante' : '') +
+        '" draggable="true" data-id="' + p.id + '" data-tipo="envio" title="' + App.esc(p.nota) + '">';
+    // En la columna quincenal se indica la semana (Sem 1/3 o Sem 2/4).
+    if (App.colFor(p.frecuencia) === 'quincenal') html += '<strong>' + App.freqLabel(p) + ':</strong> ';
+    html += '<span class="sup-nombre">' + App.esc(p.nombre) + '</span>';
+    // Anotación: día de llegada (se calcula solo con envío + tránsito).
+    html += ' <span class="llegada">(' + App.abbrDia(p.posDiaEntrega, p.posDiaEnvio) + ')</span>';
+    if (p.estricto) html += ' <span class="estricto">*Estricto</span>';
+    if (p.nota) html += '<span class="prep">' + App.esc(p.nota) + '</span>';
+    html += '</li>';
+    return html;
+};
+
+/* ------------------------------------------------------------
+   itemRecepcion(p): HTML de un proveedor en el calendario de
+   recepción. Muestra el día de envío como anotación y, si la
+   recepción fue movida a mano, un botón para volver a "auto".
+   ------------------------------------------------------------ */
+App.itemRecepcion = function (p) {
+    let html = '<li class="supplier' + (p.gigante ? ' gigante' : '') +
+        '" draggable="true" data-id="' + p.id + '" data-tipo="entrega" title="' + App.esc(p.nota) + '">';
+    if (App.colFor(p.frecuencia) === 'quincenal') html += '<strong>' + App.freqLabel(p) + ':</strong> ';
+    html += '<span class="sup-nombre">' + App.esc(p.nombre) + '</span>';
+    // Anotación: día de envío correspondiente a esta recepción.
+    html += ' <span class="llegada">(' + App.abbrDia(p.posDiaEnvio, p.posDiaEntrega) + ')</span>';
+    if (p.sobrescribirEntrega) {
+        html += '<span class="override-badge">🔓 manual</span>' +
+            '<button class="re-link" data-id="' + p.id + '" draggable="false">↺ auto</button>';
+    }
+    html += '</li>';
+    return html;
+};
+
+/* ------------------------------------------------------------
+   cellHtml(items, tipo, col, dia, vacios): contenido de una celda.
+   - En el calendario de pedidos agrega, si corresponde, la nota
+     "[Enviar los Preps del X]" cuando el día anterior tenía
+     proveedores preparados (anticipación > 0).
+   - Si no hay ítems y existe un texto para esa celda, lo muestra.
+   ------------------------------------------------------------ */
+App.cellHtml = function (items, tipo, col, dia, vacios) {
+    const lis = [];
+    if (tipo === 'envio') {
+        // Día anterior en ciclo de 7 días.
+        const prev = (dia + 6) % 7;
+        const hasPreps = App.proveedores.some(function (p) {
+            return App.colFor(p.frecuencia) === col && p.posDiaEnvio === prev &&
+                (p.anticipacion || 0) > 0;
+        });
+        if (hasPreps) {
+            lis.push('<li><strong>[Enviar los Preps del ' + App.DIAS[prev].nombre + ']</strong></li>');
+        }
+    }
+    for (let i = 0; i < items.length; i++) {
+        lis.push(tipo === 'envio' ? App.itemEnvio(items[i]) : App.itemRecepcion(items[i]));
+    }
+    if (!lis.length) {
+        const v = vacios[dia + '|' + col];
+        return v ? '<em>' + v + '</em>' : '';
+    }
+    return '<ul>' + lis.join('') + '</ul>';
+};
+
+/* ------------------------------------------------------------
+   renderPedidos(): dibuja la tabla de gestión de pedidos.
+   Cada celda es un destino de drag (td[data-col][data-dia]).
+   ------------------------------------------------------------ */
+App.renderPedidos = function () {
+    const tb = document.getElementById('tbodyPedidos');
+    let html = '';
+    for (let r = 0; r < App.PEDIDOS_ROWS.length; r++) {
+        const dia = App.PEDIDOS_ROWS[r];
+        // Primera columna: nombre del día + nota (si existe).
+        html += '<tr><td>' + App.DIAS[dia].nombre +
+            (App.PEDIDOS_SUB[dia]
+                ? '<br><span style="font-size:0.8em;font-weight:normal;">' + App.PEDIDOS_SUB[dia] + '</span>'
+                : '') + '</td>';
+        for (let c = 0; c < App.COLS.length; c++) {
+            const col = App.COLS[c];
+            const items = App.proveedores.filter(function (p) {
+                return App.colFor(p.frecuencia) === col && p.posDiaEnvio === dia;
+            });
+            html += '<td data-col="' + col + '" data-dia="' + dia + '">' +
+                App.cellHtml(items, 'envio', col, dia, App.VACIOS_PEDIDOS) + '</td>';
+        }
+        html += '</tr>';
+    }
+    tb.innerHTML = html;
+};
+
+/* ------------------------------------------------------------
+   renderRecepcion(): dibuja la tabla de recepción de bodega.
+   ------------------------------------------------------------ */
+App.renderRecepcion = function () {
+    const tb = document.getElementById('tbodyRecepcion');
+    let html = '';
+    for (let r = 0; r < App.RECEPCION_ROWS.length; r++) {
+        const dia = App.RECEPCION_ROWS[r];
+        html += '<tr><td>' + App.DIAS[dia].nombre +
+            (App.RECEPCION_SUB[dia]
+                ? '<br><span style="font-size:0.8em;font-weight:normal;">' + App.RECEPCION_SUB[dia] + '</span>'
+                : '') + '</td>';
+        for (let c = 0; c < App.COLS.length; c++) {
+            const col = App.COLS[c];
+            const items = App.proveedores.filter(function (p) {
+                return App.colFor(p.frecuencia) === col && p.posDiaEntrega === dia;
+            });
+            html += '<td data-col="' + col + '" data-dia="' + dia + '">' +
+                App.cellHtml(items, 'entrega', col, dia, App.VACIOS_RECEPCION) + '</td>';
+        }
+        html += '</tr>';
+    }
+    tb.innerHTML = html;
+};
+
+/* Redibuja ambos calendarios. Se llama tras cualquier cambio. */
+App.renderCalendario = function () {
+    App.renderPedidos();
+    App.renderRecepcion();
+};
+
+/* ------------------------------------------------------------
+   chips(dias): mini-etiquetas con los días abreviados.
+   ------------------------------------------------------------ */
+App.chips = function (dias) {
+    if (!dias || !dias.length) return '<span class="chip-none">ninguno</span>';
+    return dias.map(function (d) {
+        return '<span class="chip">' + App.DIAS[d].abbr + '</span>';
+    }).join('');
+};
+
+/* ------------------------------------------------------------
+   renderProveedores(): dibuja la tabla de la pantalla de
+   proveedores, aplicando el filtro de búsqueda por nombre.
+   ------------------------------------------------------------ */
+App.renderProveedores = function () {
+    const filtro = (document.getElementById('filtroProveedores').value || '').toLowerCase().trim();
+    const tb = document.getElementById('tbodyProveedores');
+    let html = '';
+    for (let i = 0; i < App.proveedores.length; i++) {
+        const p = App.proveedores[i];
+        if (filtro && p.nombre.toLowerCase().indexOf(filtro) === -1) continue;
+        html += '<tr>' +
+            '<td>' + App.esc(p.nombre) + '</td>' +
+            '<td>' + App.FRECUENCIA_LABEL[p.frecuencia] + '</td>' +
+            '<td>' + App.chips(p.diasEnvio) + '</td>' +
+            '<td>' + App.chips(p.diasEntrega) + '</td>' +
+            '<td>' + p.transito + '</td>' +
+            '<td>' + p.anticipacion + '</td>' +
+            '<td>' + (p.estricto ? '✔' : '') + '</td>' +
+            '<td>' + (p.gigante ? '✔' : '') + '</td>' +
+            '<td><button class="btn" data-edit="' + p.id + '">Editar</button> ' +
+            '<button class="btn btn-danger" data-del="' + p.id + '">Eliminar</button></td>' +
+            '</tr>';
+    }
+    tb.innerHTML = html;
+};

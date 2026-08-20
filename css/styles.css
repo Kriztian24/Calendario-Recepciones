@@ -1,0 +1,308 @@
+/* ============================================================
+   styles.css - Estilos del Calendario de Pedidos y Recepción
+   ------------------------------------------------------------
+   Mantiene el diseño original de la aplicación.
+   Secciones:
+     1. Estilos base (body, títulos, leyenda, tablas)
+     2. Barra de navegación superior fija
+     3. Drag & drop (celdas válidas/inválidas)
+     4. Pantalla de Proveedores (toolbar, botones, chips)
+     5. Modal de alta/edición de proveedores
+     6. Panel lateral de leyenda (cenefa)
+     7. Toast (notificaciones)
+   ============================================================ */
+body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+margin: 0;
+            padding: 76px 20px 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .leyenda {
+            background-color: #e9ecef;
+            border-left: 5px solid #007bff;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        .leyenda strong { color: #007bff; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            vertical-align: top;
+        }
+        th {
+            background-color: #343a40;
+            color: #fff;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        td:first-child {
+            font-weight: bold;
+            background-color: #e9ecef;
+            text-align: center;
+            width: 10%;
+        }
+        .prep { color: #d35400; font-weight: bold; font-size: 0.85em; display: block; margin-top: 5px; }
+        .estricto { color: #c0392b; font-size: 0.8em; font-style: italic; }
+        .llegada { color: #27ae60; font-weight: bold; }
+        .gigante { background-color: #fff3cd; border: 1px dashed #ffc107; padding: 2px; border-radius: 3px; }
+        ul { margin: 0; padding-left: 20px; font-size: 0.9em; line-height: 1.4; }
+        li { margin-bottom: 4px; }
+
+.app-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            background-color: #343a40;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            height: 56px;
+        }
+        .nav-logo {
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.05em;
+            letter-spacing: 0.3px;
+        }
+        .nav-logo span { color: #ffc107; }
+        .nav-options {
+            display: flex;
+            gap: 6px;
+        }
+        .nav-btn {
+            background: transparent;
+            color: #adb5bd;
+            border: none;
+            padding: 8px 14px;
+            font-size: 0.95em;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .nav-btn:hover { background-color: #495057; color: #fff; }
+        .nav-btn.active { background-color: #007bff; color: #fff; }
+        .hidden { display: none !important; }
+
+        .supplier { cursor: grab; transition: opacity 0.15s; }
+        .supplier.dragging { opacity: 0.4; }
+        .supplier .re-link {
+            cursor: pointer;
+            border: none;
+            background: #007bff;
+            color: #fff;
+            border-radius: 3px;
+            font-size: 0.7em;
+            padding: 1px 5px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+        .supplier .re-link:hover { background: #0056b3; }
+        .override-badge { color: #007bff; font-size: 0.8em; font-weight: normal; margin-left: 6px; }
+        td.drop-ok { outline: 2px dashed #28a745; outline-offset: -2px; background-color: #f0fff4; }
+        td.drop-no { outline: 2px dashed #dc3545; outline-offset: -2px; background-color: #fff5f5; }
+        .drag-hint {
+            background-color: #d1ecf1;
+            border-left: 5px solid #0c5460;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #0c5460;
+        }
+
+        .db-toolbar {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .db-toolbar input[type="text"] {
+            padding: 8px 10px;
+            font-size: 0.9em;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-family: inherit;
+            width: 220px;
+        }
+        .btn {
+            background-color: #343a40;
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            font-size: 0.9em;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .btn:hover { background-color: #495057; }
+        .btn-primary { background-color: #007bff; }
+        .btn-primary:hover { background-color: #0056b3; }
+        .btn-danger { background-color: #dc3545; }
+        .btn-danger:hover { background-color: #bd2130; }
+        .btn-success { background-color: #28a745; }
+        .btn-success:hover { background-color: #218838; }
+        #tablaProveedores { font-size: 0.85em; }
+        #tablaProveedores th { font-size: 0.95em; }
+        #tablaProveedores td:first-child { background-color: #fff; width: auto; }
+        .chip {
+            display: inline-block;
+            background: #e9ecef;
+            border-radius: 3px;
+            padding: 0 5px;
+            margin: 1px;
+            font-size: 0.8em;
+        }
+        .chip-none { color: #999; font-style: italic; }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 30px 10px;
+        }
+        .modal {
+            background: #fff;
+            border-radius: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 640px;
+            padding: 20px 24px;
+        }
+        .modal h3 { margin-top: 0; color: #2c3e50; }
+        .modal .campo { margin-bottom: 14px; }
+        .modal label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9em; color: #2c3e50; }
+        .modal input[type="text"], .modal input[type="number"], .modal select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.9em;
+            box-sizing: border-box;
+        }
+        .modal .checks label {
+            display: inline-block;
+            font-weight: normal;
+            margin-right: 10px;
+            margin-bottom: 6px;
+            background: #e9ecef;
+            padding: 5px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .modal .checks label.checked { background: #007bff; color: #fff; }
+        .modal .checks input { margin-right: 3px; }
+        .modal .fila { display: flex; gap: 14px; flex-wrap: wrap; }
+        .modal .fila .campo { flex: 1; min-width: 160px; }
+        .modal .acciones { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
+
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #343a40;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            z-index: 2000;
+            max-width: 90vw;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.25s;
+            pointer-events: none;
+        }
+#toast.show { opacity: 1; }
+
+        .side-tab {
+            position: fixed;
+            top: 120px;
+            right: 0;
+            z-index: 1000;
+            width: 24px;
+            height: 96px;
+            background-color: rgba(0, 123, 255, 0.55);
+            color: #fff;
+            border: none;
+            border-radius: 8px 0 0 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: -1px 1px 5px rgba(0,0,0,0.15);
+            font-size: 0.68em;
+            font-weight: 600;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transition: background-color 0.2s;
+            font-family: inherit;
+            padding: 3px 0;
+            letter-spacing: 1px;
+        }
+        .side-tab:hover { background-color: rgba(0, 123, 255, 0.85); }
+        .side-panel {
+            position: fixed;
+            top: 56px;
+            right: 0;
+            bottom: 0;
+            width: 340px;
+            max-width: 92vw;
+            z-index: 998;
+            background: #f8f9fa;
+            box-shadow: -3px 0 12px rgba(0,0,0,0.2);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+            padding: 16px;
+            border-left: 1px solid #dee2e6;
+        }
+        .side-panel.open { transform: translateX(0); }
+        .panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .panel-head h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1em;
+        }
+        .panel-close {
+            background: none;
+            border: none;
+            font-size: 1.15em;
+            line-height: 1;
+            cursor: pointer;
+            color: #6c757d;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .panel-close:hover { background: #e9ecef; color: #dc3545; }
