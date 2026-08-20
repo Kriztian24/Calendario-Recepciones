@@ -10,7 +10,7 @@
 
     <!-- Barra de navegación superior fija -->
     <nav class="app-nav">
-        <div class="nav-logo">🛒 <span>Calendario de Pedidos</span></div>
+        <div class="nav-logo">🛒 <span>Powered by HELIX</span></div>
         <div class="nav-options">
             <button id="btnCalendario" class="nav-btn active">📅 Calendario</button>
             <button id="btnProveedores" class="nav-btn">🗂️ Proveedores</button>
@@ -45,14 +45,12 @@
     <!-- Pantalla 1: Calendarios de pedidos y recepción -->
     <div id="screen-calendario" class="screen">
 
-        <h1>🛒 Calendario Óptimo Integrado de Supermercado</h1>
-
-        <h2>📝 1. CALENDARIO DE GESTIÓN DE PEDIDOS (Para el Comprador)</h2>
+        <h2>📝 1. CALENDARIO DE GESTIÓN DE PEDIDOS</h2>
         <table id="tablaPedidos">
             <thead>
                 <tr>
                     <th>DÍA</th>
-                    <th>ROTACIÓN ALTA Y SEMANAL</th>
+                    <th>ROTACIÓN SEMANAL</th>
                     <th>QUINCENALES (Sem. 1 y 3 / Sem. 2 y 4)</th>
                     <th>MENSUALES Y CICLOS LARGOS</th>
                 </tr>
@@ -60,14 +58,14 @@
             <tbody id="tbodyPedidos"></tbody>
         </table>
 
-        <h2>📦 2. CALENDARIO DE RECEPCIÓN BODEGA (Para el Jefe de Bodega)</h2>
+        <h2>📦 2. CALENDARIO DE RECEPCIÓN BODEGA</h2>
         <table id="tablaRecepcion">
             <thead>
                 <tr>
                     <th>DÍA</th>
-                    <th>DESCARGA ROTACIÓN / SEMANAL</th>
-                    <th>DESCARGA QUINCENAL</th>
-                    <th>DESCARGA MENSUAL</th>
+                    <th>RECEPCIÓN ROTACIÓN / SEMANAL</th>
+                    <th>RECEPCIÓN QUINCENAL</th>
+                    <th>RECEPCIÓN MENSUAL</th>
                 </tr>
             </thead>
             <tbody id="tbodyRecepcion"></tbody>
@@ -170,6 +168,11 @@
 
     <!-- Notificaciones temporales -->
     <div id="toast"></div>
+
+    <!-- Menú contextual de proveedores (clic derecho) -->
+    <div id="ctxMenu" class="ctx-menu hidden">
+        <button class="ctx-item" id="ctxEdit">✏️ Editar proveedor</button>
+    </div>
 
     <!-- Scripts en orden: datos -> estado -> render -> drag -> proveedores -> app -->
     <script src="js/datos.js"></script>

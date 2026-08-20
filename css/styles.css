@@ -48,13 +48,53 @@ margin: 0;
             text-align: center;
             font-size: 1.1em;
         }
-        td:first-child {
+td:first-child {
             font-weight: bold;
             background-color: #e9ecef;
             text-align: center;
             width: 10%;
         }
+        /* Resumen de cantidades bajo el nombre del día */
+        .resumen {
+            display: block;
+            font-size: 0.72em;
+            font-weight: normal;
+            color: #6c757d;
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+        .resumen .rsem, .resumen .rquin, .resumen .rmen { display: block; }
+        .resumen .rsem::before { content: '● '; color: #007bff; }
+        .resumen .rquin::before { content: '● '; color: #fd7e14; }
+        .resumen .rmen::before { content: '● '; color: #6f42c1; }
+        .resumen .rtotal {
+            display: block;
+            margin-top: 4px;
+            border-top: 1px solid #ced4da;
+            padding-top: 2px;
+            font-weight: bold;
+            color: #495057;
+        }
+        .resumen .rvacio { color: #adb5bd; font-style: italic; }
         .prep { color: #d35400; font-weight: bold; font-size: 0.85em; display: block; margin-top: 5px; }
+        .sup-nombre { font-weight: 600; font-size: 0.96em; color: #1f2937; }
+        .sem-label {
+            font-size: 0.72em;
+            font-weight: normal;
+            color: #6c757d;
+            background: #e9ecef;
+            border-radius: 3px;
+            padding: 0 4px;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+        .supplier .prep {
+            color: #6c757d;
+            font-weight: normal;
+            font-size: 0.8em;
+            display: block;
+            margin-top: 2px;
+        }
         .estricto { color: #c0392b; font-size: 0.8em; font-style: italic; }
         .llegada { color: #27ae60; font-weight: bold; }
         .gigante { background-color: #fff3cd; border: 1px dashed #ffc107; padding: 2px; border-radius: 3px; }
@@ -101,8 +141,43 @@ margin: 0;
         .nav-btn.active { background-color: #007bff; color: #fff; }
         .hidden { display: none !important; }
 
-        .supplier { cursor: grab; transition: opacity 0.15s; }
+.supplier {
+            cursor: grab;
+            transition: opacity 0.15s, background-color 0.15s, box-shadow 0.15s, transform 0.15s;
+            border-radius: 3px;
+            padding: 1px 4px;
+        }
+        .supplier:hover {
+            background-color: #e7f3ff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.14);
+            transform: translateY(-1px);
+        }
+        .supplier.gigante:hover { background-color: #ffe9a8; }
         .supplier.dragging { opacity: 0.4; }
+        /* Menú contextual (clic derecho) */
+        .ctx-menu {
+            position: fixed;
+            z-index: 1500;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+            min-width: 170px;
+            padding: 4px 0;
+        }
+        .ctx-item {
+            display: block;
+            width: 100%;
+            background: none;
+            border: none;
+            text-align: left;
+            padding: 8px 14px;
+            font-size: 0.9em;
+            font-family: inherit;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+        .ctx-item:hover { background: #e7f3ff; color: #0056b3; }
         .supplier .re-link {
             cursor: pointer;
             border: none;

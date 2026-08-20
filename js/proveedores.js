@@ -156,6 +156,48 @@
         const del = e.target.closest ? e.target.closest('[data-del]') : null;
         if (del) eliminarProveedor(del.dataset.del);
     });
+    // Clic derecho sobre un proveedor del calendario: muestra un
+    // menú contextual propio con la opción de editar (en lugar del
+    // menú nativo del navegador).
+    const ctxMenu = document.getElementById('ctxMenu');
+    let ctxSupplierId = null;
+
+    /* cerrarCtx(): oculta el menú contextual y olvida el proveedor. */
+    function cerrarCtx() {
+        ctxMenu.classList.add('hidden');
+        ctxSupplierId = null;
+    }
+
+    document.addEventListener('contextmenu', function (e) {
+        const li = e.target.closest ? e.target.closest('.supplier') : null;
+        if (!li) { cerrarCtx(); return; }
+        e.preventDefault();
+        ctxSupplierId = li.dataset.id;
+        // Posiciona el menú junto al cursor, sin salirse de la ventana.
+        ctxMenu.classList.remove('hidden');
+        const mw = ctxMenu.offsetWidth || 160;
+        const mh = ctxMenu.offsetHeight || 40;
+        let x = e.clientX;
+        let y = e.clientY;
+        if (x + mw > window.innerWidth - 4) x = window.innerWidth - mw - 4;
+        if (y + mh > window.innerHeight - 4) y = window.innerHeight - mh - 4;
+        ctxMenu.style.left = Math.max(0, x) + 'px';
+        ctxMenu.style.top = Math.max(0, y) + 'px';
+    });
+
+    // "Editar" del menú contextual abre el diálogo de edición.
+    document.getElementById('ctxEdit').addEventListener('click', function () {
+        const id = ctxSupplierId;
+        cerrarCtx();
+        if (id) App.openModal(App.getById(id));
+    });
+
+    // Se cierra al hacer clic fuera, con Escape, al hacer scroll o al
+    // redimensionar la ventana.
+    document.addEventListener('click', cerrarCtx);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrarCtx(); });
+    window.addEventListener('scroll', cerrarCtx, true);
+    window.addEventListener('resize', cerrarCtx);
     // Filtro de búsqueda por nombre.
     document.getElementById('filtroProveedores').addEventListener('input', App.renderProveedores);
 

@@ -37,19 +37,6 @@ App.COLS = ['semanal', 'quincenal', 'mensual'];
 App.PEDIDOS_ROWS = [6, 0, 1, 2, 3, 4, 5];
 App.RECEPCION_ROWS = [1, 2, 3, 4, 5, 6];
 
-/* Notas bajo el nombre del día (primera columna) */
-App.PEDIDOS_SUB = {
-    6: '(Mañana)',
-    0: '(Día de Borradores)',
-    1: '(Día de Envíos Rápidos)',
-    4: '(Día de mayor exigencia)',
-    5: '(Día Cero Carga - Reuniones)'
-};
-App.RECEPCION_SUB = {
-    3: '(Día Descongestionado)',
-    4: '(Full Recepción Finde)'
-};
-
 /* Textos de celdas vacías conocidas, con formato "día|columna" */
 App.VACIOS_PEDIDOS = {
     '6|mensual': 'Libre de gestión mensual',

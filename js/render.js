@@ -12,9 +12,12 @@ var App = window.App = window.App || {};
 App.itemEnvio = function (p) {
     let html = '<li class="supplier' + (p.gigante ? ' gigante' : '') +
         '" draggable="true" data-id="' + p.id + '" data-tipo="envio" title="' + App.esc(p.nota) + '">';
-    // En la columna quincenal se indica la semana (Sem 1/3 o Sem 2/4).
-    if (App.colFor(p.frecuencia) === 'quincenal') html += '<strong>' + App.freqLabel(p) + ':</strong> ';
+    // El nombre siempre va al inicio; la semana (Sem 1/3 o Sem 2/4)
+    // se muestra después como una mini etiqueta sutil.
     html += '<span class="sup-nombre">' + App.esc(p.nombre) + '</span>';
+    if (App.colFor(p.frecuencia) === 'quincenal') {
+        html += ' <span class="sem-label">' + App.freqLabel(p) + '</span>';
+    }
     // Anotación: día de llegada (se calcula solo con envío + tránsito).
     html += ' <span class="llegada">(' + App.abbrDia(p.posDiaEntrega, p.posDiaEnvio) + ')</span>';
     if (p.estricto) html += ' <span class="estricto">*Estricto</span>';
@@ -31,8 +34,12 @@ App.itemEnvio = function (p) {
 App.itemRecepcion = function (p) {
     let html = '<li class="supplier' + (p.gigante ? ' gigante' : '') +
         '" draggable="true" data-id="' + p.id + '" data-tipo="entrega" title="' + App.esc(p.nota) + '">';
-    if (App.colFor(p.frecuencia) === 'quincenal') html += '<strong>' + App.freqLabel(p) + ':</strong> ';
+    // El nombre siempre va al inicio; la semana (Sem 1/3 o Sem 2/4)
+    // se muestra después como una mini etiqueta sutil.
     html += '<span class="sup-nombre">' + App.esc(p.nombre) + '</span>';
+    if (App.colFor(p.frecuencia) === 'quincenal') {
+        html += ' <span class="sem-label">' + App.freqLabel(p) + '</span>';
+    }
     // Anotación: día de envío correspondiente a esta recepción.
     html += ' <span class="llegada">(' + App.abbrDia(p.posDiaEnvio, p.posDiaEntrega) + ')</span>';
     if (p.sobrescribirEntrega) {
@@ -74,6 +81,36 @@ App.cellHtml = function (items, tipo, col, dia, vacios) {
 };
 
 /* ------------------------------------------------------------
+   resumenDia(tipo, dia): cuenta los proveedores que caen ese día
+   en el calendario "tipo" (envio/entrega), agrupados por columna.
+   ------------------------------------------------------------ */
+App.resumenDia = function (tipo, dia) {
+    const key = tipo === 'envio' ? 'posDiaEnvio' : 'posDiaEntrega';
+    const res = { semanal: 0, quincenal: 0, mensual: 0 };
+    for (let i = 0; i < App.proveedores.length; i++) {
+        const p = App.proveedores[i];
+        if (p[key] === dia) res[App.colFor(p.frecuencia)]++;
+    }
+    return res;
+};
+
+/* ------------------------------------------------------------
+   resumenHtml(res): HTML del resumen bajo el nombre del día.
+   Cada columna ocupa una línea (solo conteos > 0) y al final se
+   muestra el total de pedidos del día. Si no hay nada: "sin pedidos".
+   ------------------------------------------------------------ */
+App.resumenHtml = function (res) {
+    const total = res.semanal + res.quincenal + res.mensual;
+    if (!total) return '<span class="rvacio">sin pedidos</span>';
+    const partes = [];
+    if (res.semanal) partes.push('<span class="rsem">' + res.semanal + ' sem</span>');
+    if (res.quincenal) partes.push('<span class="rquin">' + res.quincenal + ' quin</span>');
+    if (res.mensual) partes.push('<span class="rmen">' + res.mensual + ' men</span>');
+    partes.push('<span class="rtotal">Total: ' + total + '</span>');
+    return partes.join('');
+};
+
+/* ------------------------------------------------------------
    renderPedidos(): dibuja la tabla de gestión de pedidos.
    Cada celda es un destino de drag (td[data-col][data-dia]).
    ------------------------------------------------------------ */
@@ -82,11 +119,9 @@ App.renderPedidos = function () {
     let html = '';
     for (let r = 0; r < App.PEDIDOS_ROWS.length; r++) {
         const dia = App.PEDIDOS_ROWS[r];
-        // Primera columna: nombre del día + nota (si existe).
+        // Primera columna: nombre del día + resumen de pedidos.
         html += '<tr><td>' + App.DIAS[dia].nombre +
-            (App.PEDIDOS_SUB[dia]
-                ? '<br><span style="font-size:0.8em;font-weight:normal;">' + App.PEDIDOS_SUB[dia] + '</span>'
-                : '') + '</td>';
+            '<span class="resumen">' + App.resumenHtml(App.resumenDia('envio', dia)) + '</span></td>';
         for (let c = 0; c < App.COLS.length; c++) {
             const col = App.COLS[c];
             const items = App.proveedores.filter(function (p) {
@@ -108,10 +143,9 @@ App.renderRecepcion = function () {
     let html = '';
     for (let r = 0; r < App.RECEPCION_ROWS.length; r++) {
         const dia = App.RECEPCION_ROWS[r];
+        // Primera columna: nombre del día + resumen de recepciones.
         html += '<tr><td>' + App.DIAS[dia].nombre +
-            (App.RECEPCION_SUB[dia]
-                ? '<br><span style="font-size:0.8em;font-weight:normal;">' + App.RECEPCION_SUB[dia] + '</span>'
-                : '') + '</td>';
+            '<span class="resumen">' + App.resumenHtml(App.resumenDia('entrega', dia)) + '</span></td>';
         for (let c = 0; c < App.COLS.length; c++) {
             const col = App.COLS[c];
             const items = App.proveedores.filter(function (p) {
