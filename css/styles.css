@@ -141,6 +141,31 @@ td:first-child {
         .nav-btn.active { background-color: #007bff; color: #fff; }
         .hidden { display: none !important; }
 
+        /* Barra de herramientas del calendario (buscador, imprimir, CSV) */
+        .cal-toolbar {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .cal-toolbar input[type="text"] {
+            padding: 8px 10px;
+            font-size: 0.9em;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-family: inherit;
+            width: 260px;
+        }
+        /* Resaltado del buscador en los calendarios */
+        .supplier.buscar-alta {
+            outline: 2px solid #007bff;
+            outline-offset: 1px;
+            background-color: #cfe2ff;
+        }
+        .supplier.buscar-baja { opacity: 0.25; }
+
 .supplier {
             cursor: grab;
             transition: opacity 0.15s, background-color 0.15s, box-shadow 0.15s, transform 0.15s;
@@ -422,3 +447,42 @@ td:first-child {
             transition: background-color 0.2s, color 0.2s;
         }
         .panel-close:hover { background: #e9ecef; color: #dc3545; }
+
+        /* Impresión / PDF: una hoja horizontal por calendario */
+        @media print {
+            @page {
+                size: landscape;
+                margin: 10mm;
+            }
+            .app-nav, .side-tab, .side-panel, .cal-toolbar,
+            #screen-proveedores, #modal, #toast, #ctxMenu {
+                display: none !important;
+            }
+            body { padding: 0; margin: 0; }
+            table { box-shadow: none; margin-bottom: 0; }
+            h1, h2 { color: #2c3e50; }
+            #screen-calendario h2 {
+                margin: 0 0 8px;
+                font-size: 15px;
+            }
+            /* Tablas compactas para que quepan en una hoja */
+            th, td { padding: 4px 6px; font-size: 10px; }
+            th { font-size: 10px; }
+            td:first-child { width: 7%; }
+            ul { padding-left: 12px; font-size: 0.8em; line-height: 1.25; }
+            li { margin-bottom: 2px; }
+            .resumen { font-size: 0.68em; margin-top: 3px; line-height: 1.3; }
+            .sup-nombre { font-size: 0.95em; }
+            .prep { font-size: 0.72em; margin-top: 2px; }
+            .supplier { padding: 0 3px; }
+            /* Un calendario por hoja: al terminar Pedidos se pasa de página */
+            #tablaPedidos {
+                page-break-after: always;
+                break-after: page;
+            }
+            #tablaRecepcion { page-break-before: auto; }
+            td, th, .supplier, .resumen {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }

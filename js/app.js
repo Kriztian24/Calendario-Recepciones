@@ -53,6 +53,36 @@ document.getElementById('btnCalendario').addEventListener('click', function () {
 document.getElementById('btnProveedores').addEventListener('click', function () { App.mostrar('proveedores'); });
 
 /* ------------------------------------------------------------
+   Buscador, impresión y exportación CSV del calendario
+   ------------------------------------------------------------ */
+
+/* Búsqueda: cada tecla re-renderiza y resalta las coincidencias. */
+document.getElementById('buscarProveedor').addEventListener('input', function () {
+    App.busqueda = this.value;
+    App.renderCalendario();
+});
+
+/* Imprimir / PDF: usa el diálogo de impresión del navegador. */
+document.getElementById('btnImprimir').addEventListener('click', function () {
+    window.print();
+});
+
+/* Exportar CSV: descarga la programación completa. */
+document.getElementById('btnCSV').addEventListener('click', function () {
+    const csv = App.exportarCSV();
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'calendario-pedidos-recepcion.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    App.toast('📄 Programación exportada a CSV.');
+});
+
+/* ------------------------------------------------------------
    Panel lateral de leyenda
    ------------------------------------------------------------ */
 

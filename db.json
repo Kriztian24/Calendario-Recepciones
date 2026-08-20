@@ -410,7 +410,7 @@
     "posDiaEntrega": 4,
     "sobrescribirEntrega": false,
     "ordenEnvio": 0,
-    "ordenEntrega": 0
+    "ordenEntrega": 2
   },
   {
     "id": "villegas-fajardo",
@@ -431,7 +431,7 @@
     "posDiaEntrega": 4,
     "sobrescribirEntrega": false,
     "ordenEnvio": 0,
-    "ordenEntrega": 0
+    "ordenEntrega": 3
   },
   {
     "id": "saliuper",
@@ -452,7 +452,7 @@
     "posDiaEntrega": 4,
     "sobrescribirEntrega": false,
     "ordenEnvio": 0,
-    "ordenEntrega": 0
+    "ordenEntrega": 1
   },
   {
     "id": "tecnoideas",
@@ -473,7 +473,7 @@
     "posDiaEntrega": 4,
     "sobrescribirEntrega": false,
     "ordenEnvio": 0,
-    "ordenEntrega": 0
+    "ordenEntrega": 4
   },
   {
     "id": "ac-bebidas",

@@ -159,6 +159,102 @@ App.renderRecepcion = function () {
 App.renderCalendario = function () {
     App.renderPedidos();
     App.renderRecepcion();
+    App.aplicarBusqueda();
+};
+
+/* ------------------------------------------------------------
+   Búsqueda de proveedor en los calendarios
+   ------------------------------------------------------------ */
+
+/* Texto de búsqueda actual (lo llena el input del calendario) */
+App.busqueda = '';
+
+/* normBusqueda(s): minúsculas y sin acentos, para que "bimbo" o
+   "bimbo" encuentren "Bimbo" aunque tengan tildes. */
+function normBusqueda(s) {
+    return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+/* aplicarBusqueda(): resalta en los calendarios los proveedores que
+   coinciden con App.busqueda y atenúa los demás. Si no hay texto,
+   no marca nada. */
+App.aplicarBusqueda = function () {
+    const q = normBusqueda(App.busqueda || '');
+    const items = document.querySelectorAll('.supplier');
+    for (let i = 0; i < items.length; i++) {
+        const p = App.getById(items[i].dataset.id);
+        const match = q && p && normBusqueda(p.nombre).indexOf(q) !== -1;
+        items[i].classList.toggle('buscar-alta', !!match);
+        items[i].classList.toggle('buscar-baja', !!q && !match);
+    }
+};
+
+/* ------------------------------------------------------------
+   Exportar la programación a CSV (Excel)
+   ------------------------------------------------------------ */
+
+/* csvCell(s): escapa un valor para CSV (comillas, ; y saltos). */
+function csvCell(s) {
+    s = String(s == null ? '' : s);
+    if (/[";\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+    return s;
+}
+
+/* exportarCSV(): genera la programación completa (pedidos y
+   recepción) en formato CSV con delimitador ";" y terminación
+   CRLF, para que Excel en español lo abra correctamente. */
+App.exportarCSV = function () {
+    const colLabel = { semanal: 'Semanal', quincenal: 'Quincenal', mensual: 'Mensual' };
+    const filas = [];
+    filas.push(['Área', 'Día', 'Columna', 'Proveedor', 'Frecuencia', 'Semana', 'Llegada/Envío', 'Nota']);
+
+    // Pedidos: envía ese día, con su llegada calculada.
+    for (let r = 0; r < App.PEDIDOS_ROWS.length; r++) {
+        const dia = App.PEDIDOS_ROWS[r];
+        for (let c = 0; c < App.COLS.length; c++) {
+            const col = App.COLS[c];
+            const items = App.itemsDelDia('envio', dia, col);
+            for (let i = 0; i < items.length; i++) {
+                const p = items[i];
+                filas.push([
+                    'Pedidos',
+                    App.DIAS[dia].nombre,
+                    colLabel[col],
+                    p.nombre,
+                    App.FRECUENCIA_LABEL[p.frecuencia],
+                    App.freqLabel(p),
+                    'Llegada ' + App.abbrDia(p.posDiaEntrega, p.posDiaEnvio),
+                    p.nota
+                ]);
+            }
+        }
+    }
+
+    // Recepción: llega ese día, con su envío de origen.
+    for (let r = 0; r < App.RECEPCION_ROWS.length; r++) {
+        const dia = App.RECEPCION_ROWS[r];
+        for (let c = 0; c < App.COLS.length; c++) {
+            const col = App.COLS[c];
+            const items = App.itemsDelDia('entrega', dia, col);
+            for (let i = 0; i < items.length; i++) {
+                const p = items[i];
+                filas.push([
+                    'Recepción',
+                    App.DIAS[dia].nombre,
+                    colLabel[col],
+                    p.nombre,
+                    App.FRECUENCIA_LABEL[p.frecuencia],
+                    App.freqLabel(p),
+                    'Envío ' + App.abbrDia(p.posDiaEnvio, p.posDiaEntrega),
+                    p.nota
+                ]);
+            }
+        }
+    }
+
+    return filas.map(function (f) {
+        return f.map(csvCell).join(';');
+    }).join('\r\n');
 };
 
 /* ------------------------------------------------------------
