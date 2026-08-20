@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendario Óptimo de Compras y Recepción</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .leyenda {
+            background-color: #e9ecef;
+            border-left: 5px solid #007bff;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        .leyenda strong { color: #007bff; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            vertical-align: top;
+        }
+        th {
+            background-color: #343a40;
+            color: #fff;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        td:first-child {
+            font-weight: bold;
+            background-color: #e9ecef;
+            text-align: center;
+            width: 10%;
+        }
+        .prep { color: #d35400; font-weight: bold; font-size: 0.85em; display: block; margin-top: 5px; }
+        .estricto { color: #c0392b; font-size: 0.8em; font-style: italic; }
+        .llegada { color: #27ae60; font-weight: bold; }
+        .gigante { background-color: #fff3cd; border: 1px dashed #ffc107; padding: 2px; border-radius: 3px; }
+        ul { margin: 0; padding-left: 20px; font-size: 0.9em; line-height: 1.4; }
+        li { margin-bottom: 4px; }
+
+        .app-nav {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            background-color: #343a40;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 0.95em;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .nav-btn:hover { background-color: #495057; }
+        .nav-btn.active { background-color: #007bff; }
+        .hidden { display: none !important; }
+
+        .supplier { cursor: grab; transition: opacity 0.15s; }
+        .supplier.dragging { opacity: 0.4; }
+        .supplier .re-link {
+            cursor: pointer;
+            border: none;
+            background: #007bff;
+            color: #fff;
+            border-radius: 3px;
+            font-size: 0.7em;
+            padding: 1px 5px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+        .supplier .re-link:hover { background: #0056b3; }
+        .override-badge { color: #007bff; font-size: 0.8em; font-weight: normal; margin-left: 6px; }
+        td.drop-ok { outline: 2px dashed #28a745; outline-offset: -2px; background-color: #f0fff4; }
+        td.drop-no { outline: 2px dashed #dc3545; outline-offset: -2px; background-color: #fff5f5; }
+        .drag-hint {
+            background-color: #d1ecf1;
+            border-left: 5px solid #0c5460;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #0c5460;
+        }
+
+        .db-toolbar {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .db-toolbar input[type="text"] {
+            padding: 8px 10px;
+            font-size: 0.9em;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-family: inherit;
+            width: 220px;
+        }
+        .btn {
+            background-color: #343a40;
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            font-size: 0.9em;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .btn:hover { background-color: #495057; }
+        .btn-primary { background-color: #007bff; }
+        .btn-primary:hover { background-color: #0056b3; }
+        .btn-danger { background-color: #dc3545; }
+        .btn-danger:hover { background-color: #bd2130; }
+        .btn-success { background-color: #28a745; }
+        .btn-success:hover { background-color: #218838; }
+        #tablaProveedores { font-size: 0.85em; }
+        #tablaProveedores th { font-size: 0.95em; }
+        #tablaProveedores td:first-child { background-color: #fff; width: auto; }
+        .chip {
+            display: inline-block;
+            background: #e9ecef;
+            border-radius: 3px;
+            padding: 0 5px;
+            margin: 1px;
+            font-size: 0.8em;
+        }
+        .chip-none { color: #999; font-style: italic; }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 30px 10px;
+        }
+        .modal {
+            background: #fff;
+            border-radius: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 640px;
+            padding: 20px 24px;
+        }
+        .modal h3 { margin-top: 0; color: #2c3e50; }
+        .modal .campo { margin-bottom: 14px; }
+        .modal label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9em; color: #2c3e50; }
+        .modal input[type="text"], .modal input[type="number"], .modal select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.9em;
+            box-sizing: border-box;
+        }
+        .modal .checks label {
+            display: inline-block;
+            font-weight: normal;
+            margin-right: 10px;
+            margin-bottom: 6px;
+            background: #e9ecef;
+            padding: 5px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .modal .checks label.checked { background: #007bff; color: #fff; }
+        .modal .checks input { margin-right: 3px; }
+        .modal .fila { display: flex; gap: 14px; flex-wrap: wrap; }
+        .modal .fila .campo { flex: 1; min-width: 160px; }
+        .modal .acciones { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
+
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #343a40;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            z-index: 2000;
+            max-width: 90vw;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.25s;
+            pointer-events: none;
+        }
+        #toast.show { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <nav class="app-nav">
+        <button id="btnCalendario" class="nav-btn active">📅 Calendario</button>
+        <button id="btnProveedores" class="nav-btn">🗂️ Proveedores</button>
+    </nav>
+
+    <div id="screen-calendario" class="screen">
+
+        <h1>🛒 Calendario Óptimo Integrado de Supermercado</h1>
+
+        <div class="leyenda">
+            <strong>📌 LEYENDA Y METODOLOGÍA:</strong><br>
+            <ul>
+                <li><strong>(L), (Ma), (Mi), (J), (V), (S):</strong> Día en el que ocurre el evento contrario (Llegada o Envío).</li>
+                <li><span class="prep">[Prep ➔ Env]:</span> Metodología para no colapsar. El comprador deja el pedido armado (Borrador) un día antes, y al día siguiente solo aprueba/envía.</li>
+                <li><span class="estricto">*Estricto:</span> El proveedor exige textualmente en sus políticas que se le pida solo ese día.</li>
+                <li><span class="gigante">Resaltado Amarillo:</span> Proveedor de volumen masivo (Gigante). Se movieron estratégicamente para no colapsar bodega.</li>
+            </ul>
+        </div>
+
+        <div class="drag-hint">
+            💡 <strong>Arrastra y suelta:</strong> mueve un proveedor entre días arrastrándolo. Solo se permite soltar en
+            columnas de su frecuencia y en días donde el proveedor acepta el pedido (o hasta sus días de anticipación).
+            La recepción se calcula automáticamente (envío + tránsito) pero puedes moverla manualmente a otro día
+            disponible. En la pestaña <strong>🗂️ Proveedores</strong> puedes dar mantenimiento a la base de datos.
+        </div>
+
+        <h2>📝 1. CALENDARIO DE GESTIÓN DE PEDIDOS (Para el Comprador)</h2>
+        <table id="tablaPedidos">
+            <thead>
+                <tr>
+                    <th>DÍA</th>
+                    <th>ROTACIÓN ALTA Y SEMANAL</th>
+                    <th>QUINCENALES (Sem. 1 y 3 / Sem. 2 y 4)</th>
+                    <th>MENSUALES Y CICLOS LARGOS</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyPedidos"></tbody>
+        </table>
+
+        <h2>📦 2. CALENDARIO DE RECEPCIÓN BODEGA (Para el Jefe de Bodega)</h2>
+        <table id="tablaRecepcion">
+            <thead>
+                <tr>
+                    <th>DÍA</th>
+                    <th>DESCARGA ROTACIÓN / SEMANAL</th>
+                    <th>DESCARGA QUINCENAL</th>
+                    <th>DESCARGA MENSUAL</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyRecepcion"></tbody>
+        </table>
+
+    </div>
+
+    <div id="screen-proveedores" class="screen hidden">
+        <h1>🗂️ Base de Datos de Proveedores</h1>
+        <div class="db-toolbar">
+            <input type="text" id="filtroProveedores" placeholder="🔍 Buscar proveedor...">
+            <button class="btn btn-primary" id="btnAgregar">+ Agregar proveedor</button>
+            <button class="btn" id="btnExportar">⬇️ Exportar JSON</button>
+            <button class="btn" id="btnImportar">⬆️ Importar JSON</button>
+            <input type="file" id="importFile" accept=".json" style="display:none;">
+            <button class="btn btn-danger" id="btnRestaurar">♻️ Restaurar original</button>
+        </div>
+        <table id="tablaProveedores">
+            <thead>
+                <tr>
+                    <th>Proveedor</th>
+                    <th>Frecuencia</th>
+                    <th>Días de Envío (recibe pedido)</th>
+                    <th>Días de Entrega</th>
+                    <th>Tránsito</th>
+                    <th>Antic.</th>
+                    <th>Estricto</th>
+                    <th>Gigante</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyProveedores"></tbody>
+        </table>
+    </div>
+
+    <div id="modal" class="modal-overlay hidden">
+        <div class="modal">
+            <h3 id="modalTitulo">Agregar Proveedor</h3>
+            <div class="campo">
+                <label>Nombre</label>
+                <input type="text" id="fNombre">
+            </div>
+            <div class="fila">
+                <div class="campo">
+                    <label>Frecuencia (columna)</label>
+                    <select id="fFrecuencia">
+                        <option value="semanal">Semanal (Rotación Alta)</option>
+                        <option value="quincenal13">Quincenal (Sem 1 y 3)</option>
+                        <option value="quincenal24">Quincenal (Sem 2 y 4)</option>
+                        <option value="mensual">Mensual / Ciclo largo</option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>Tránsito (días envío → llegada)</label>
+                    <input type="number" id="fTransito" min="0" max="7" value="1">
+                </div>
+                <div class="campo">
+                    <label>Anticipación (días antes)</label>
+                    <input type="number" id="fAnticipacion" min="0" max="3" value="0">
+                </div>
+            </div>
+            <div class="campo">
+                <label>Días en que RECIBE pedido (días de envío permitidos)</label>
+                <div class="checks" id="fDiasEnvio"></div>
+            </div>
+            <div class="campo">
+                <label>Días en que ENTREGA pedido</label>
+                <div class="checks" id="fDiasEntrega"></div>
+            </div>
+            <div class="fila">
+                <div class="campo">
+                    <label>Posición actual (Pedidos)</label>
+                    <select id="fPosEnvio"></select>
+                </div>
+                <div class="campo">
+                    <label>Posición actual (Recepción)</label>
+                    <select id="fPosEntrega"></select>
+                </div>
+            </div>
+            <div class="fila">
+                <div class="campo">
+                    <label><input type="checkbox" id="fEstricto"> *Estricto</label>
+                </div>
+                <div class="campo">
+                    <label><input type="checkbox" id="fGigante"> Gigante (volumen masivo)</label>
+                </div>
+            </div>
+            <div class="campo">
+                <label>Nota / Prep (opcional)</label>
+                <input type="text" id="fNota" placeholder="Ej: Prep Domingo ➔ Envía Lunes">
+            </div>
+            <div class="acciones">
+                <button class="btn" id="btnCancelar">Cancelar</button>
+                <button class="btn btn-success" id="btnGuardar">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+    const KEY = 'calendarioComprasDB';
+    const SEED_PROVEEDORES = [
+  {
+    "id": "cablu",
+    "nombre": "Cablu S.A.S.",
+    "frecuencia": "semanal",
+    "diasEnvio": [6],
+    "diasEntrega": [1, 2, 3, 4, 5],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Pedido obligatorio el sábado por la mañana",
+    "posDiaEnvio": 6,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "la-chilenita",
+    "nombre": "Laminados Industrial (La Chilenita)",
+    "frecuencia": "semanal",
+    "diasEnvio": [6],
+    "diasEntrega": [1],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Pedido obligatorio sábado",
+    "posDiaEnvio": 6,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "zambrano-figueroa",
+    "nombre": "Zambrano Figueroa Carlos Eduardo",
+    "frecuencia": "semanal",
+    "diasEnvio": [6],
+    "diasEntrega": [1],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Pedido obligatorio sábado mañana",
+    "posDiaEnvio": 6,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "heineken",
+    "nombre": "Heineken Ecuador S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [0, 1, 2, 3, 4, 5],
+    "diasEntrega": [1, 2, 3, 4, 5],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Atiende orden realizada el domingo para entrega lunes",
+    "posDiaEnvio": 0,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "la-fabril",
+    "nombre": "La Fabril S.A.",
+    "frecuencia": "semanal",
+    "diasEnvio": [1, 2, 3, 4, 5],
+    "diasEntrega": [3, 4, 5],
+    "transito": 2,
+    "anticipacion": 1,
+    "estricto": false,
+    "gigante": true,
+    "nota": "Prep Domingo -> Envía Lunes para descongestionar recepción el Jueves",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": true
+  },
+  {
+    "id": "chicaiza",
+    "nombre": "Chicaiza Bombon Hugo",
+    "frecuencia": "semanal",
+    "diasEnvio": [1],
+    "diasEntrega": [1],
+    "transito": 0,
+    "anticipacion": 1,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Lead time 8 horas (Entrega mismo día)",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "crearvida",
+    "nombre": "Crearvida S.A.",
+    "frecuencia": "semanal",
+    "diasEnvio": [1],
+    "diasEntrega": [2],
+    "transito": 1,
+    "anticipacion": 1,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Prep Domingo -> Envía Lunes",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 2,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "lituma",
+    "nombre": "Lituma Ordoñez Miguel Augusto",
+    "frecuencia": "semanal",
+    "diasEnvio": [1],
+    "diasEntrega": [2],
+    "transito": 1,
+    "anticipacion": 1,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Prep Domingo -> Envía Lunes",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 2,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "dipor",
+    "nombre": "Distribuidora Importadora Dipor S.A.",
+    "frecuencia": "semanal",
+    "diasEnvio": [1],
+    "diasEntrega": [2],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 2,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "jefamicorp",
+    "nombre": "Jefamicorp S.A.",
+    "frecuencia": "semanal",
+    "diasEnvio": [1],
+    "diasEntrega": [3, 4],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 3,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "inalecsa",
+    "nombre": "Industrias Alimenticias Ecuatorianas S.A. Inalecsa",
+    "frecuencia": "quincenal24",
+    "diasEnvio": [1],
+    "diasEntrega": [3],
+    "transito": 2,
+    "anticipacion": 1,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Prep Domingo -> Envía Lunes",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 3,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "pydaco",
+    "nombre": "Pydaco Cía. Ltda.",
+    "frecuencia": "semanal",
+    "diasEnvio": [1],
+    "diasEntrega": [2, 3],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Lunes pedido máximo 3:00pm",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 2,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "bimbo",
+    "nombre": "Bimbo Ecuador S.A.",
+    "frecuencia": "semanal",
+    "diasEnvio": [2],
+    "diasEntrega": [3],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Martes pedido estricto",
+    "posDiaEnvio": 2,
+    "posDiaEntrega": 3,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "anahi-02",
+    "nombre": "Distribuidora Anahi S.A. (Sucursal 02)",
+    "frecuencia": "semanal",
+    "diasEnvio": [1, 2],
+    "diasEntrega": [2, 3],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 2,
+    "posDiaEntrega": 3,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "deanova",
+    "nombre": "Deanova S.A.",
+    "frecuencia": "semanal",
+    "diasEnvio": [1, 2, 3, 4, 5],
+    "diasEntrega": [3],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Martes haría pedido",
+    "posDiaEnvio": 2,
+    "posDiaEntrega": 3,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "danec",
+    "nombre": "Industrial Danec S.A.",
+    "frecuencia": "semanal",
+    "diasEnvio": [1, 2, 3, 4, 5],
+    "diasEntrega": [1, 2, 3, 4, 5],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": true,
+    "nota": "Movido a Miércoles para liberar recepción del Jueves",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": true
+  },
+  {
+    "id": "arreaga-ayala",
+    "nombre": "Arreaga Ayala Byron Adalberto",
+    "frecuencia": "semanal",
+    "diasEnvio": [3],
+    "diasEntrega": [4],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 4,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "panificadora-industrial",
+    "nombre": "Panificadora Industrial Cia. Ltda.",
+    "frecuencia": "semanal",
+    "diasEnvio": [3],
+    "diasEntrega": [4],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 4,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "villegas-fajardo",
+    "nombre": "Villegas Fajardo Claudio Kumar",
+    "frecuencia": "semanal",
+    "diasEnvio": [3],
+    "diasEntrega": [4],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 4,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "saliuper",
+    "nombre": "Saliuper S.A.",
+    "frecuencia": "semanal",
+    "diasEnvio": [3],
+    "diasEntrega": [4],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 4,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "tecnoideas",
+    "nombre": "Tecnoideas S.A.",
+    "frecuencia": "semanal",
+    "diasEnvio": [3],
+    "diasEntrega": [4],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 4,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "ac-bebidas",
+    "nombre": "Bebidas Arcacontinental Ecuador (Arcador C.L.)",
+    "frecuencia": "semanal",
+    "diasEnvio": [3, 5],
+    "diasEntrega": [1, 4],
+    "transito": 3,
+    "anticipacion": 1,
+    "estricto": true,
+    "gigante": true,
+    "nota": "Pedido en borrador Miércoles, enviado Jueves para entrega Lunes Isidro PC",
+    "posDiaEnvio": 4,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": true
+  },
+  {
+    "id": "dazulthi",
+    "nombre": "Distribuidora Dazulthi S.A.S.",
+    "frecuencia": "semanal",
+    "diasEnvio": [4],
+    "diasEntrega": [5],
+    "transito": 1,
+    "anticipacion": 1,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Prep Miércoles ➔ Envía Jueves",
+    "posDiaEnvio": 4,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "gruvalcorp",
+    "nombre": "Gruvalcorp S.A.",
+    "frecuencia": "semanal",
+    "diasEnvio": [4],
+    "diasEntrega": [5],
+    "transito": 1,
+    "anticipacion": 1,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Prep Miércoles ➔ Envía Jueves",
+    "posDiaEnvio": 4,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "piggis",
+    "nombre": "Piggis Embutidos Pigem Cia. Ltda.",
+    "frecuencia": "semanal",
+    "diasEnvio": [4],
+    "diasEntrega": [5],
+    "transito": 1,
+    "anticipacion": 1,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Prep Miércoles ➔ Envía Jueves",
+    "posDiaEnvio": 4,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "cafrilosa",
+    "nombre": "Industria de Alimentos Cafrilosa S.A.",
+    "frecuencia": "semanal",
+    "diasEnvio": [4],
+    "diasEntrega": [5],
+    "transito": 1,
+    "anticipacion": 1,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Prep Miércoles ➔ Envía Jueves",
+    "posDiaEnvio": 4,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "reylacteos",
+    "nombre": "Reylacteos C.L.",
+    "frecuencia": "semanal",
+    "diasEnvio": [4],
+    "diasEntrega": [5],
+    "transito": 1,
+    "anticipacion": 1,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Prep Miércoles ➔ Envía Jueves",
+    "posDiaEnvio": 4,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "foproca",
+    "nombre": "Foproca S.A. B.I.C.",
+    "frecuencia": "semanal",
+    "diasEnvio": [4],
+    "diasEntrega": [5],
+    "transito": 1,
+    "anticipacion": 1,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Prep Miércoles ➔ Envía Jueves",
+    "posDiaEnvio": 4,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "cerela",
+    "nombre": "Cerela Guillermina Cevallos Intriago",
+    "frecuencia": "quincenal24",
+    "diasEnvio": [5],
+    "diasEntrega": [5],
+    "transito": 0,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Lead time 8 horas (Mismo día)",
+    "posDiaEnvio": 5,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "anahi-01",
+    "nombre": "Distribuidora Anahi S.A. (Sucursal 01)",
+    "frecuencia": "semanal",
+    "diasEnvio": [5, 6],
+    "diasEntrega": [1],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Pedido sábado mañana para entrega Lunes",
+    "posDiaEnvio": 6,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "alicorp",
+    "nombre": "Alicorp Ecuador S.A.",
+    "frecuencia": "semanal",
+    "diasEnvio": [1, 2, 3, 4, 5, 6],
+    "diasEntrega": [1],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Pedido sábado mañana para entrega Lunes",
+    "posDiaEnvio": 6,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "godoy-ruiz",
+    "nombre": "Comercializadora Godoy Ruiz S.A.",
+    "frecuencia": "quincenal13",
+    "diasEnvio": [5, 6],
+    "diasEntrega": [1],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Pedido sábado mañana",
+    "posDiaEnvio": 6,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "viteri-briones",
+    "nombre": "Viteri Briones Armida Elizabeth",
+    "frecuencia": "mensual",
+    "diasEnvio": [5],
+    "diasEntrega": [2],
+    "transito": 4,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Viernes visita obligatoria ➔ Entrega Martes fijo",
+    "posDiaEnvio": 5,
+    "posDiaEntrega": 2,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "unilever",
+    "nombre": "Unilever Andina Ecuador S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [1, 2, 3, 4, 5],
+    "diasEntrega": [3, 4, 5],
+    "transito": 2,
+    "anticipacion": 1,
+    "estricto": false,
+    "gigante": true,
+    "nota": "Prep Martes ➔ Envía Miércoles para entrega Viernes",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": true
+  },
+  {
+    "id": "induquiclor",
+    "nombre": "Induquiclor S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [4],
+    "diasEntrega": [1],
+    "transito": 4,
+    "anticipacion": 1,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Prep Miércoles ➔ Envía Jueves para entrega Lunes (Ruta Daule)",
+    "posDiaEnvio": 4,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "surtitodo",
+    "nombre": "Surtitodo S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [2],
+    "diasEntrega": [3],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Martes pedido estricto",
+    "posDiaEnvio": 2,
+    "posDiaEntrega": 3,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "pepsico",
+    "nombre": "Pepsico Alimentos Ecuador Cia. Ltda.",
+    "frecuencia": "quincenal13",
+    "diasEnvio": [1],
+    "diasEntrega": [3],
+    "transito": 2,
+    "anticipacion": 1,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Prep Domingo ➔ Envía Lunes",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 3,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "macias-macias",
+    "nombre": "Macias Macias Angel Lizandro",
+    "frecuencia": "quincenal13",
+    "diasEnvio": [1, 2],
+    "diasEntrega": [3, 4],
+    "transito": 2,
+    "anticipacion": 1,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Prep Domingo ➔ Envía Lunes",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 3,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "lacteos-san-antonio",
+    "nombre": "Lacteos San Antonio C.A.",
+    "frecuencia": "quincenal13",
+    "diasEnvio": [2],
+    "diasEntrega": [4],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 2,
+    "posDiaEntrega": 4,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "colombina",
+    "nombre": "Distribuidora Colombina del Ecuador S.A.",
+    "frecuencia": "quincenal13",
+    "diasEnvio": [2],
+    "diasEntrega": [5],
+    "transito": 3,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Martes pedido estricto",
+    "posDiaEnvio": 2,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "villavicencio",
+    "nombre": "Villavicencio Villafuerte Dally Dalila",
+    "frecuencia": "quincenal24",
+    "diasEnvio": [2, 3],
+    "diasEntrega": [5],
+    "transito": 3,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 2,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "alpina",
+    "nombre": "Alpina Productos Alimenticios Alpiecuador S.A.",
+    "frecuencia": "quincenal13",
+    "diasEnvio": [3, 4],
+    "diasEntrega": [5],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Miércoles haría pedido",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "dacendi",
+    "nombre": "Dacendi S.A.",
+    "frecuencia": "quincenal13",
+    "diasEnvio": [3],
+    "diasEntrega": [4, 5],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "segarra-bermeo",
+    "nombre": "Segarra Bermeo Evelyn Tatiana",
+    "frecuencia": "quincenal24",
+    "diasEnvio": [4, 5],
+    "diasEntrega": [6],
+    "transito": 2,
+    "anticipacion": 1,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Prep Miércoles ➔ Envía Jueves",
+    "posDiaEnvio": 4,
+    "posDiaEntrega": 6,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "nestle",
+    "nombre": "Nestlé Ecuador S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [5],
+    "diasEntrega": [1, 2, 3, 4, 5],
+    "transito": 3,
+    "anticipacion": 1,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Prep Jueves ➔ Envía Viernes en borrador automático",
+    "posDiaEnvio": 5,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false
+  },
+  {
+    "id": "briones-contreras",
+    "nombre": "Briones Contreras Scarleth Elizabeth",
+    "frecuencia": "quincenal13",
+    "diasEnvio": [5],
+    "diasEntrega": [1],
+    "transito": 3,
+    "anticipacion": 1,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Prep Jueves ➔ Envía Viernes en borrador automático",
+    "posDiaEnvio": 5,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false
+  }
+]
+;
+
+    const DIAS = [
+        { idx: 0, nombre: 'Domingo',   abbr: 'Dom' },
+        { idx: 1, nombre: 'Lunes',     abbr: 'L' },
+        { idx: 2, nombre: 'Martes',    abbr: 'Ma' },
+        { idx: 3, nombre: 'Miércoles', abbr: 'Mi' },
+        { idx: 4, nombre: 'Jueves',    abbr: 'J' },
+        { idx: 5, nombre: 'Viernes',   abbr: 'V' },
+        { idx: 6, nombre: 'Sábado',    abbr: 'S' }
+    ];
+    const FRECUENCIA_LABEL = {
+        semanal: 'Semanal',
+        quincenal13: 'Quincenal (Sem 1 y 3)',
+        quincenal24: 'Quincenal (Sem 2 y 4)',
+        mensual: 'Mensual'
+    };
+    const PEDIDOS_ROWS = [6, 0, 1, 2, 3, 4, 5];
+    const RECEPCION_ROWS = [1, 2, 3, 4, 5, 6];
+    const PEDIDOS_SUB = { 6: '(Mañana)', 0: '(Día de Borradores)', 1: '(Día de Envíos Rápidos)', 4: '(Día de mayor exigencia)', 5: '(Día Cero Carga - Reuniones)' };
+    const RECEPCION_SUB = { 3: '(Día Descongestionado)', 4: '(Full Recepción Finde)' };
+    const VACIOS_PEDIDOS = { '6|mensual': 'Libre de gestión mensual', '5|quincenal': 'Libre de gestión' };
+    const VACIOS_RECEPCION = { '6|semanal': 'Vacío / Libre', '6|mensual': 'Vacío / Libre' };
+
+    function colFor(f) { return f === 'semanal' ? 'semanal' : f === 'mensual' ? 'mensual' : 'quincenal'; }
+    function freqLabel(p) { return p.frecuencia === 'quincenal13' ? 'Sem 1/3' : p.frecuencia === 'quincenal24' ? 'Sem 2/4' : ''; }
+    function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+    function slug(s) {
+        return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
+    function normalize(p) {
+        p = Object.assign({}, p);
+        p.diasEnvio = Array.isArray(p.diasEnvio) ? p.diasEnvio.map(Number) : [];
+        p.diasEntrega = Array.isArray(p.diasEntrega) ? p.diasEntrega.map(Number) : [];
+        p.transito = p.transito == null ? 1 : +p.transito;
+        p.anticipacion = p.anticipacion == null ? 0 : +p.anticipacion;
+        p.estricto = !!p.estricto;
+        p.gigante = !!p.gigante;
+        p.nota = p.nota || '';
+        p.posDiaEnvio = (p.posDiaEnvio == null || isNaN(+p.posDiaEnvio)) ? (p.diasEnvio.length ? p.diasEnvio[0] : 1) : +p.posDiaEnvio;
+        p.posDiaEntrega = (p.posDiaEntrega == null || isNaN(+p.posDiaEntrega)) ? (p.diasEntrega.length ? p.diasEntrega[0] : 1) : +p.posDiaEntrega;
+        p.sobrescribirEntrega = !!p.sobrescribirEntrega;
+        if (!p.id) p.id = slug(p.nombre || 'proveedor') + '-' + Date.now().toString(36);
+        return p;
+    }
+    function load() {
+        try {
+            const raw = localStorage.getItem(KEY);
+            if (raw) {
+                const arr = JSON.parse(raw);
+                if (Array.isArray(arr)) return arr.map(normalize);
+            }
+        } catch (e) {}
+        return SEED_PROVEEDORES.map(normalize);
+    }
+    let proveedores = load();
+    function save() { localStorage.setItem(KEY, JSON.stringify(proveedores)); }
+    function getById(id) { return proveedores.find(function (p) { return p.id === id; }); }
+
+    function envioPermitido(p, dia) {
+        if (p.diasEnvio.indexOf(dia) !== -1) return true;
+        const ant = p.anticipacion || 0;
+        if (ant <= 0) return false;
+        return p.diasEnvio.some(function (d) {
+            const dist = (d - dia + 7) % 7;
+            return dist >= 1 && dist <= ant;
+        });
+    }
+    function canDrop(p, tipo, col, dia) {
+        if (colFor(p.frecuencia) !== col) return false;
+        if (tipo === 'envio') return envioPermitido(p, dia);
+        return p.diasEntrega.indexOf(dia) !== -1;
+    }
+
+    function abbrDia(d, otroDia) {
+        if (d === otroDia) return 'Mismo ' + DIAS[d].abbr;
+        return DIAS[d].abbr;
+    }
+    function itemEnvio(p) {
+        let html = '<li class="supplier' + (p.gigante ? ' gigante' : '') + '" draggable="true" data-id="' + p.id + '" data-tipo="envio" title="' + esc(p.nota) + '">';
+        if (colFor(p.frecuencia) === 'quincenal') html += '<strong>' + freqLabel(p) + ':</strong> ';
+        html += '<span class="sup-nombre">' + esc(p.nombre) + '</span>';
+        html += ' <span class="llegada">(' + abbrDia(p.posDiaEntrega, p.posDiaEnvio) + ')</span>';
+        if (p.estricto) html += ' <span class="estricto">*Estricto</span>';
+        if (p.nota) html += '<span class="prep">' + esc(p.nota) + '</span>';
+        html += '</li>';
+        return html;
+    }
+    function itemRecepcion(p) {
+        let html = '<li class="supplier' + (p.gigante ? ' gigante' : '') + '" draggable="true" data-id="' + p.id + '" data-tipo="entrega" title="' + esc(p.nota) + '">';
+        if (colFor(p.frecuencia) === 'quincenal') html += '<strong>' + freqLabel(p) + ':</strong> ';
+        html += '<span class="sup-nombre">' + esc(p.nombre) + '</span>';
+        html += ' <span class="llegada">(' + abbrDia(p.posDiaEnvio, p.posDiaEntrega) + ')</span>';
+        if (p.sobrescribirEntrega) html += '<span class="override-badge">🔓 manual</span><button class="re-link" data-id="' + p.id + '" draggable="false">↺ auto</button>';
+        html += '</li>';
+        return html;
+    }
+    function cellHtml(items, tipo, col, dia, vacios) {
+        const lis = [];
+        if (tipo === 'envio') {
+            const prev = (dia + 6) % 7;
+            const hasPreps = proveedores.some(function (p) {
+                return colFor(p.frecuencia) === col && p.posDiaEnvio === prev && (p.anticipacion || 0) > 0;
+            });
+            if (hasPreps) lis.push('<li><strong>[Enviar los Preps del ' + DIAS[prev].nombre + ']</strong></li>');
+        }
+        for (let i = 0; i < items.length; i++) {
+            lis.push(tipo === 'envio' ? itemEnvio(items[i]) : itemRecepcion(items[i]));
+        }
+        if (!lis.length) {
+            const v = vacios[dia + '|' + col];
+            return v ? '<em>' + v + '</em>' : '';
+        }
+        return '<ul>' + lis.join('') + '</ul>';
+    }
+    function renderPedidos() {
+        const tb = document.getElementById('tbodyPedidos');
+        let html = '';
+        for (let r = 0; r < PEDIDOS_ROWS.length; r++) {
+            const dia = PEDIDOS_ROWS[r];
+            html += '<tr><td>' + DIAS[dia].nombre + (PEDIDOS_SUB[dia] ? '<br><span style="font-size:0.8em;font-weight:normal;">' + PEDIDOS_SUB[dia] + '</span>' : '') + '</td>';
+            const cols = ['semanal', 'quincenal', 'mensual'];
+            for (let c = 0; c < cols.length; c++) {
+                const col = cols[c];
+                const items = proveedores.filter(function (p) { return colFor(p.frecuencia) === col && p.posDiaEnvio === dia; });
+                html += '<td data-col="' + col + '" data-dia="' + dia + '">' + cellHtml(items, 'envio', col, dia, VACIOS_PEDIDOS) + '</td>';
+            }
+            html += '</tr>';
+        }
+        tb.innerHTML = html;
+    }
+    function renderRecepcion() {
+        const tb = document.getElementById('tbodyRecepcion');
+        let html = '';
+        for (let r = 0; r < RECEPCION_ROWS.length; r++) {
+            const dia = RECEPCION_ROWS[r];
+            html += '<tr><td>' + DIAS[dia].nombre + (RECEPCION_SUB[dia] ? '<br><span style="font-size:0.8em;font-weight:normal;">' + RECEPCION_SUB[dia] + '</span>' : '') + '</td>';
+            const cols = ['semanal', 'quincenal', 'mensual'];
+            for (let c = 0; c < cols.length; c++) {
+                const col = cols[c];
+                const items = proveedores.filter(function (p) { return colFor(p.frecuencia) === col && p.posDiaEntrega === dia; });
+                html += '<td data-col="' + col + '" data-dia="' + dia + '">' + cellHtml(items, 'entrega', col, dia, VACIOS_RECEPCION) + '</td>';
+            }
+            html += '</tr>';
+        }
+        tb.innerHTML = html;
+    }
+    function renderCalendario() { renderPedidos(); renderRecepcion(); }
+
+    function chips(dias) {
+        if (!dias || !dias.length) return '<span class="chip-none">ninguno</span>';
+        return dias.map(function (d) { return '<span class="chip">' + DIAS[d].abbr + '</span>'; }).join('');
+    }
+    function renderProveedores() {
+        const filtro = (document.getElementById('filtroProveedores').value || '').toLowerCase().trim();
+        const tb = document.getElementById('tbodyProveedores');
+        let html = '';
+        for (let i = 0; i < proveedores.length; i++) {
+            const p = proveedores[i];
+            if (filtro && p.nombre.toLowerCase().indexOf(filtro) === -1) continue;
+            html += '<tr>' +
+                '<td>' + esc(p.nombre) + '</td>' +
+                '<td>' + FRECUENCIA_LABEL[p.frecuencia] + '</td>' +
+                '<td>' + chips(p.diasEnvio) + '</td>' +
+                '<td>' + chips(p.diasEntrega) + '</td>' +
+                '<td>' + p.transito + '</td>' +
+                '<td>' + p.anticipacion + '</td>' +
+                '<td>' + (p.estricto ? '✔' : '') + '</td>' +
+                '<td>' + (p.gigante ? '✔' : '') + '</td>' +
+                '<td><button class="btn" data-edit="' + p.id + '">Editar</button> <button class="btn btn-danger" data-del="' + p.id + '">Eliminar</button></td>' +
+                '</tr>';
+        }
+        tb.innerHTML = html;
+    }
+
+    let toastTimer = null;
+    function toast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { t.classList.remove('show'); }, 3500);
+    }
+
+    let dragData = null;
+    let lastTd = null;
+    function clearDropHighlights() {
+        const tds = document.querySelectorAll('td.drop-ok, td.drop-no');
+        for (let i = 0; i < tds.length; i++) tds[i].classList.remove('drop-ok', 'drop-no');
+        lastTd = null;
+    }
+    document.addEventListener('dragstart', function (e) {
+        const li = e.target.closest ? e.target.closest('.supplier') : null;
+        if (!li) return;
+        dragData = { id: li.dataset.id, tipo: li.dataset.tipo };
+        li.classList.add('dragging');
+        if (e.dataTransfer) {
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', JSON.stringify(dragData));
+        }
+    });
+    document.addEventListener('dragend', function (e) {
+        const li = e.target.closest ? e.target.closest('.supplier') : null;
+        if (li) li.classList.remove('dragging');
+        clearDropHighlights();
+        dragData = null;
+    });
+    document.addEventListener('dragover', function (e) {
+        const td = e.target.closest ? e.target.closest('td[data-col]') : null;
+        if (!td || !dragData) return;
+        if (lastTd && lastTd !== td) lastTd.classList.remove('drop-ok', 'drop-no');
+        lastTd = td;
+        const p = getById(dragData.id);
+        if (!p) return;
+        const dia = +td.dataset.dia, col = td.dataset.col;
+        if (canDrop(p, dragData.tipo, col, dia)) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            td.classList.add('drop-ok');
+            td.classList.remove('drop-no');
+        } else {
+            td.classList.remove('drop-ok');
+            td.classList.add('drop-no');
+        }
+    });
+    document.addEventListener('drop', function (e) {
+        e.preventDefault();
+        const td = e.target.closest ? e.target.closest('td[data-col]') : null;
+        const p = dragData ? getById(dragData.id) : null;
+        if (!td || !p) { clearDropHighlights(); return; }
+        const dia = +td.dataset.dia, col = td.dataset.col;
+        if (canDrop(p, dragData.tipo, col, dia)) {
+            applyMove(p, dragData.tipo, dia);
+            save();
+            renderCalendario();
+        }
+        clearDropHighlights();
+    });
+    function whyInvalid(p, tipo, col, dia) {
+        if (colFor(p.frecuencia) !== col) return p.nombre + ' es de frecuencia "' + FRECUENCIA_LABEL[p.frecuencia] + '"; no puede ir a esa columna.';
+        if (tipo === 'entrega') return p.nombre + ' solo entrega los días: ' + p.diasEntrega.map(function (d) { return DIAS[d].abbr; }).join(', ') + '.';
+        const base = p.diasEnvio.map(function (d) { return DIAS[d].nombre; }).join(', ');
+        const ant = p.anticipacion || 0;
+        return p.nombre + ' solo recibe pedido: ' + base + (ant ? ' (o hasta ' + ant + ' día(s) antes)' : '') + '.';
+    }
+    function applyMove(p, tipo, dia) {
+        if (tipo === 'envio') {
+            if (p.posDiaEnvio === dia) return;
+            p.posDiaEnvio = dia;
+            if (!p.sobrescribirEntrega) {
+                const lleg = (dia + p.transito) % 7;
+                if (p.diasEntrega.indexOf(lleg) !== -1) {
+                    p.posDiaEntrega = lleg;
+                } else {
+                    toast('⚠️ ' + p.nombre + ': el envío el ' + DIAS[dia].nombre + ' generaría llegada ' + DIAS[lleg].nombre + ' (no permitida). Mueve su recepción manualmente.');
+                }
+            }
+        } else {
+            if (p.posDiaEntrega === dia) return;
+            p.posDiaEntrega = dia;
+            p.sobrescribirEntrega = true;
+        }
+    }
+
+    document.addEventListener('click', function (e) {
+        const re = e.target.closest ? e.target.closest('.re-link') : null;
+        if (re) {
+            const p = getById(re.dataset.id);
+            if (p) {
+                p.sobrescribirEntrega = false;
+                const lleg = (p.posDiaEnvio + p.transito) % 7;
+                if (p.diasEntrega.indexOf(lleg) !== -1) {
+                    p.posDiaEntrega = lleg;
+                    toast('🔗 ' + p.nombre + ': recepción vinculada automáticamente (' + DIAS[lleg].nombre + ').');
+                } else {
+                    toast('⚠️ ' + p.nombre + ': llegada automática ' + DIAS[lleg].nombre + ' no permitida; se mantiene en ' + DIAS[p.posDiaEntrega].nombre + '.');
+                }
+                save();
+                renderCalendario();
+            }
+            return;
+        }
+        const ed = e.target.closest ? e.target.closest('[data-edit]') : null;
+        if (ed) { openModal(getById(ed.dataset.edit)); return; }
+        const del = e.target.closest ? e.target.closest('[data-del]') : null;
+        if (del) { eliminarProveedor(del.dataset.del); }
+    });
+
+    function mostrar(cual) {
+        const showCal = cual === 'calendario';
+        document.getElementById('screen-calendario').classList.toggle('hidden', !showCal);
+        document.getElementById('screen-proveedores').classList.toggle('hidden', showCal);
+        document.getElementById('btnCalendario').classList.toggle('active', showCal);
+        document.getElementById('btnProveedores').classList.toggle('active', !showCal);
+    }
+    document.getElementById('btnCalendario').addEventListener('click', function () { mostrar('calendario'); });
+    document.getElementById('btnProveedores').addEventListener('click', function () { mostrar('proveedores'); });
+
+    let editandoId = null;
+    function renderDayChecks(contId, selected) {
+        const cont = document.getElementById(contId);
+        cont.innerHTML = '';
+        for (let i = 0; i < DIAS.length; i++) {
+            const d = DIAS[i];
+            const label = document.createElement('label');
+            const cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.value = d.idx;
+            cb.checked = selected.indexOf(d.idx) !== -1;
+            cb.addEventListener('change', function () { label.classList.toggle('checked', cb.checked); });
+            label.className = cb.checked ? 'checked' : '';
+            label.appendChild(cb);
+            label.appendChild(document.createTextNode(' ' + d.abbr));
+            cont.appendChild(label);
+        }
+    }
+    function fillPosSelects(p) {
+        const pe = document.getElementById('fPosEnvio');
+        const pg = document.getElementById('fPosEntrega');
+        pe.innerHTML = '';
+        pg.innerHTML = '';
+        for (let i = 0; i < DIAS.length; i++) {
+            const o1 = document.createElement('option');
+            o1.value = DIAS[i].idx;
+            o1.textContent = DIAS[i].nombre;
+            pe.appendChild(o1);
+            const o2 = document.createElement('option');
+            o2.value = DIAS[i].idx;
+            o2.textContent = DIAS[i].nombre;
+            pg.appendChild(o2);
+        }
+        pe.value = p ? p.posDiaEnvio : (p && p.diasEnvio.length ? p.diasEnvio[0] : 0);
+        pg.value = p ? p.posDiaEntrega : 1;
+    }
+    function openModal(p) {
+        editandoId = p ? p.id : null;
+        document.getElementById('modalTitulo').textContent = p ? 'Editar Proveedor' : 'Agregar Proveedor';
+        document.getElementById('fNombre').value = p ? p.nombre : '';
+        document.getElementById('fFrecuencia').value = p ? p.frecuencia : 'semanal';
+        document.getElementById('fTransito').value = p ? p.transito : 1;
+        document.getElementById('fAnticipacion').value = p ? p.anticipacion : 0;
+        document.getElementById('fEstricto').checked = p ? p.estricto : false;
+        document.getElementById('fGigante').checked = p ? p.gigante : false;
+        document.getElementById('fNota').value = p ? p.nota : '';
+        renderDayChecks('fDiasEnvio', p ? p.diasEnvio : []);
+        renderDayChecks('fDiasEntrega', p ? p.diasEntrega : []);
+        fillPosSelects(p);
+        document.getElementById('modal').classList.remove('hidden');
+    }
+    function cerrarModal() {
+        document.getElementById('modal').classList.add('hidden');
+        editandoId = null;
+    }
+    function checkedVals(id) {
+        return Array.prototype.map.call(document.querySelectorAll('#' + id + ' input[type="checkbox"]:checked'), function (cb) { return +cb.value; });
+    }
+    function guardar() {
+        const nombre = document.getElementById('fNombre').value.trim();
+        if (!nombre) { toast('⚠️ Escribe el nombre del proveedor.'); return; }
+        const diasEnvio = checkedVals('fDiasEnvio');
+        const diasEntrega = checkedVals('fDiasEntrega');
+        if (!diasEnvio.length) { toast('⚠️ Selecciona al menos un día de envío.'); return; }
+        if (!diasEntrega.length) { toast('⚠️ Selecciona al menos un día de entrega.'); return; }
+        const data = {
+            nombre: nombre,
+            frecuencia: document.getElementById('fFrecuencia').value,
+            diasEnvio: diasEnvio,
+            diasEntrega: diasEntrega,
+            transito: Math.max(0, +document.getElementById('fTransito').value || 1),
+            anticipacion: Math.max(0, Math.min(3, +document.getElementById('fAnticipacion').value || 0)),
+            estricto: document.getElementById('fEstricto').checked,
+            gigante: document.getElementById('fGigante').checked,
+            nota: document.getElementById('fNota').value.trim(),
+            posDiaEnvio: +document.getElementById('fPosEnvio').value,
+            posDiaEntrega: +document.getElementById('fPosEntrega').value,
+            sobrescribirEntrega: false
+        };
+        if (!envioPermitido(data, data.posDiaEnvio)) data.posDiaEnvio = diasEnvio[0];
+        if (diasEntrega.indexOf(data.posDiaEntrega) === -1) data.posDiaEntrega = diasEntrega[0];
+        const llegAuto = (data.posDiaEnvio + data.transito) % 7;
+        data.sobrescribirEntrega = data.posDiaEntrega !== llegAuto;
+        if (editandoId) {
+            const p = getById(editandoId);
+            const nuevo = normalize(data);
+            nuevo.id = p.id;
+            Object.assign(p, nuevo);
+        } else {
+            proveedores.push(normalize(data));
+        }
+        save();
+        renderCalendario();
+        renderProveedores();
+        cerrarModal();
+        toast('✅ Proveedor guardado.');
+    }
+    function eliminarProveedor(id) {
+        const p = getById(id);
+        if (!p) return;
+        if (!confirm('¿Eliminar a "' + p.nombre + '"?')) return;
+        proveedores = proveedores.filter(function (x) { return x.id !== id; });
+        save();
+        renderCalendario();
+        renderProveedores();
+        toast('🗑️ Proveedor eliminado.');
+    }
+
+    document.getElementById('btnAgregar').addEventListener('click', function () { openModal(null); });
+    document.getElementById('btnCancelar').addEventListener('click', cerrarModal);
+    document.getElementById('btnGuardar').addEventListener('click', guardar);
+    document.getElementById('modal').addEventListener('click', function (e) { if (e.target === this) cerrarModal(); });
+    document.getElementById('filtroProveedores').addEventListener('input', renderProveedores);
+
+    document.getElementById('btnExportar').addEventListener('click', function () {
+        const blob = new Blob([JSON.stringify(proveedores, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data-proveedores.json';
+        a.click();
+        URL.revokeObjectURL(url);
+        toast('⬇️ JSON exportado (' + proveedores.length + ' proveedores).');
+    });
+    document.getElementById('btnImportar').addEventListener('click', function () { document.getElementById('importFile').click(); });
+    document.getElementById('importFile').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function () {
+            try {
+                const arr = JSON.parse(reader.result);
+                if (!Array.isArray(arr)) throw new Error('No es un array');
+                proveedores = arr.map(normalize);
+                save();
+                renderCalendario();
+                renderProveedores();
+                toast('✅ Base de datos importada (' + proveedores.length + ' proveedores).');
+            } catch (err) {
+                toast('❌ JSON inválido: ' + err.message);
+            }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+    });
+    document.getElementById('btnRestaurar').addEventListener('click', function () {
+        if (!confirm('Se reemplazará la base de datos actual por los datos originales. ¿Continuar?')) return;
+        proveedores = SEED_PROVEEDORES.map(normalize);
+        save();
+        renderCalendario();
+        renderProveedores();
+        toast('♻️ Datos originales restaurados.');
+    });
+
+    renderCalendario();
+    renderProveedores();
+    </script>
+</body>
+</html>
