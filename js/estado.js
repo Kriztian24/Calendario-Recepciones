@@ -73,6 +73,37 @@ App.setVistaInvertida = function (v) {
     App.renderCalendario();
 };
 
+/* Filtro de semana quincenal (pills 1/3 y 2/4 en la cabecera de frecuencia).
+   Vacío o ambos seleccionados = mostrar todo. Uno solo = filtrar. */
+App.filtroSemanas = (function () {
+    try {
+        const v = JSON.parse(localStorage.getItem('filtroSemanas') || '[]');
+        return new Set(Array.isArray(v) ? v : []);
+    } catch (e) { return new Set(); }
+})();
+App.pasaFiltroSemana = function (p) {
+    if (App.filtroSemanas.size === 0 || App.filtroSemanas.size === 2) return true;
+    if (p.frecuencia === 'quincenal13') return App.filtroSemanas.has('13');
+    if (p.frecuencia === 'quincenal24') return App.filtroSemanas.has('24');
+    return true; // semanal y mensual siempre visibles
+};
+App.toggleFiltroSemana = function (sem) {
+    if (App.filtroSemanas.has(sem)) App.filtroSemanas.delete(sem);
+    else App.filtroSemanas.add(sem);
+    try { localStorage.setItem('filtroSemanas', JSON.stringify([...App.filtroSemanas])); } catch (e) {}
+    App.renderCalendario();
+};
+
+// Delegación para las pills de filtro quincenal (creadas dinámicamente en el thead/tbody)
+document.addEventListener('click', function (e) {
+    const pill = e.target.closest ? e.target.closest('.filtro-pill') : null;
+    if (pill && pill.dataset.semana) {
+        e.preventDefault();
+        e.stopPropagation();
+        App.toggleFiltroSemana(pill.dataset.semana);
+    }
+});
+
 /* loadLocal(): lee la caché de localStorage; si no existe (o el
    JSON está corrupto) usa la semilla incrustada. */
 App.loadLocal = function () {

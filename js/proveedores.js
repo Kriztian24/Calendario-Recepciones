@@ -297,6 +297,58 @@
         });
     }
 
+    // Edición inline en la tabla: frecuencia, tránsito, anticipación, estricto, gigante
+    document.getElementById('tablaProveedores').addEventListener('change', function (e) {
+        const el = e.target;
+        if (!el.dataset.id || !el.dataset.field) return;
+        // Ignorar chips de días (son botones, no change)
+        if (el.classList.contains('chip-edit')) return;
+        const p = App.getById(el.dataset.id);
+        if (!p) return;
+        const field = el.dataset.field;
+        let val;
+        if (field === 'frecuencia') {
+            val = el.value;
+        } else if (field === 'transito' || field === 'anticipacion') {
+            val = parseInt(el.value, 10);
+            if (isNaN(val) || val < 0) val = 0;
+            if (val > 7) val = 7;
+            el.value = val;
+        } else if (field === 'estricto' || field === 'gigante') {
+            val = el.checked;
+        } else return;
+        p[field] = val;
+        App.save();
+        App.renderCalendario();
+        if (App.sortKey === field) App.renderProveedores();
+        const labels = { frecuencia: 'Frecuencia', transito: 'Tránsito', anticipacion: 'Anticipación', estricto: 'Estricto', gigante: 'Gigante' };
+        App.toast('✏️ ' + p.nombre + ': ' + (labels[field] || field) + ' actualizado.');
+    });
+
+    // Edición inline de días (chips sutiles): clic alterna el día
+    document.getElementById('tablaProveedores').addEventListener('click', function (e) {
+        const btn = e.target.closest ? e.target.closest('.chip-edit') : null;
+        if (!btn || !btn.dataset.id) return;
+        const p = App.getById(btn.dataset.id);
+        if (!p) return;
+        const field = btn.dataset.field;
+        const dia = parseInt(btn.dataset.dia, 10);
+        const arr = p[field];
+        const idx = arr.indexOf(dia);
+        if (idx !== -1) {
+            if (arr.length === 1) { App.toast('⚠️ Debe tener al menos un día.'); return; }
+            arr.splice(idx, 1);
+        } else {
+            arr.push(dia);
+            arr.sort(function (a, b) { return a - b; });
+        }
+        App.save();
+        App.renderCalendario();
+        App.renderProveedores();
+        const label = field === 'diasEnvio' ? 'Días envío' : 'Días entrega';
+        App.toast('✏️ ' + p.nombre + ': ' + label + ' actualizado.');
+    });
+
     /* ----------------------------------------------------------
        Exportar / Importar / Restaurar
        ---------------------------------------------------------- */

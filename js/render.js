@@ -64,7 +64,7 @@ App.cellHtml = function (items, tipo, col, dia, vacios) {
         const prev = (dia + 6) % 7;
         const hasPreps = App.proveedores.some(function (p) {
             return App.colFor(p.frecuencia) === col && p.posDiaEnvio === prev &&
-                (p.anticipacion || 0) > 0;
+                (p.anticipacion || 0) > 0 && App.pasaFiltroSemana(p);
         });
         if (hasPreps) {
             lis.push('<li><strong>[Enviar los Preps del ' + App.DIAS[prev].nombre + ']</strong></li>');
@@ -89,9 +89,15 @@ App.resumenDia = function (tipo, dia) {
     const res = { semanal: 0, quincenal: 0, mensual: 0 };
     for (let i = 0; i < App.proveedores.length; i++) {
         const p = App.proveedores[i];
-        if (p[key] === dia) res[App.colFor(p.frecuencia)]++;
+        if (p[key] === dia && App.pasaFiltroSemana(p)) res[App.colFor(p.frecuencia)]++;
     }
     return res;
+};
+
+App.htmlPillsSemana = function () {
+    const has13 = App.filtroSemanas.has('13');
+    const has24 = App.filtroSemanas.has('24');
+    return '<span class="filtros-semana"><button class="filtro-pill' + (has13 ? ' activo' : '') + '" data-semana="13" title="Mostrar semana 1/3">1/3</button><button class="filtro-pill' + (has24 ? ' activo' : '') + '" data-semana="24" title="Mostrar semana 2/4">2/4</button></span>';
 };
 
 /* ------------------------------------------------------------
@@ -122,8 +128,8 @@ App.renderPedidos = function () {
     const colLabel = { semanal: 'ROTACIÓN SEMANAL', quincenal: 'QUINCENALES (Sem. 1 y 3 / Sem. 2 y 4)', mensual: 'MENSUALES Y CICLOS LARGOS' };
     let html = '';
     if (!App.vistaInvertida) {
-        // Cabecera normal
-        if (theadTr) theadTr.innerHTML = '<th>DÍA</th><th>ROTACIÓN SEMANAL</th><th>QUINCENALES (Sem. 1 y 3 / Sem. 2 y 4)</th><th>MENSUALES Y CICLOS LARGOS</th>';
+        // Cabecera normal (quincenal con pills sutiles)
+        if (theadTr) theadTr.innerHTML = '<th>DÍA</th><th>ROTACIÓN SEMANAL</th><th>QUINCENALES (Sem. 1 y 3 / Sem. 2 y 4) ' + App.htmlPillsSemana() + '</th><th>MENSUALES Y CICLOS LARGOS</th>';
         for (let r = 0; r < App.PEDIDOS_ROWS.length; r++) {
             const dia = App.PEDIDOS_ROWS[r];
             const res = App.resumenDia('envio', dia);
@@ -132,7 +138,7 @@ App.renderPedidos = function () {
                 '<span class="resumen">' + App.resumenHtml(res) + '</span></td>';
             for (let c = 0; c < App.COLS.length; c++) {
                 const col = App.COLS[c];
-                const items = App.itemsDelDia('envio', dia, col);
+                const items = App.itemsDelDia('envio', dia, col).filter(App.pasaFiltroSemana);
                 html += '<td data-col="' + col + '" data-dia="' + dia + '">' +
                     App.cellHtml(items, 'envio', col, dia, App.VACIOS_PEDIDOS) + '</td>';
             }
@@ -153,10 +159,10 @@ App.renderPedidos = function () {
         }
         for (let c = 0; c < App.COLS.length; c++) {
             const col = App.COLS[c];
-            html += '<tr><td>' + colLabel[col] + '</td>';
+            html += '<tr><td>' + colLabel[col] + (col === 'quincenal' ? ' ' + App.htmlPillsSemana() : '') + '</td>';
             for (let r = 0; r < App.PEDIDOS_ROWS.length; r++) {
                 const dia = App.PEDIDOS_ROWS[r];
-                const items = App.itemsDelDia('envio', dia, col);
+                const items = App.itemsDelDia('envio', dia, col).filter(App.pasaFiltroSemana);
                 html += '<td data-col="' + col + '" data-dia="' + dia + '">' +
                     App.cellHtml(items, 'envio', col, dia, App.VACIOS_PEDIDOS) + '</td>';
             }
@@ -175,7 +181,7 @@ App.renderRecepcion = function () {
     const colLabel = { semanal: 'RECEPCIÓN ROTACIÓN / SEMANAL', quincenal: 'RECEPCIÓN QUINCENAL', mensual: 'RECEPCIÓN MENSUAL' };
     let html = '';
     if (!App.vistaInvertida) {
-        if (theadTr) theadTr.innerHTML = '<th>DÍA</th><th>RECEPCIÓN ROTACIÓN / SEMANAL</th><th>RECEPCIÓN QUINCENAL</th><th>RECEPCIÓN MENSUAL</th>';
+        if (theadTr) theadTr.innerHTML = '<th>DÍA</th><th>RECEPCIÓN ROTACIÓN / SEMANAL</th><th>RECEPCIÓN QUINCENAL ' + App.htmlPillsSemana() + '</th><th>RECEPCIÓN MENSUAL</th>';
         for (let r = 0; r < App.RECEPCION_ROWS.length; r++) {
             const dia = App.RECEPCION_ROWS[r];
             const res = App.resumenDia('entrega', dia);
@@ -184,7 +190,7 @@ App.renderRecepcion = function () {
                 '<span class="resumen">' + App.resumenHtml(res) + '</span></td>';
             for (let c = 0; c < App.COLS.length; c++) {
                 const col = App.COLS[c];
-                const items = App.itemsDelDia('entrega', dia, col);
+                const items = App.itemsDelDia('entrega', dia, col).filter(App.pasaFiltroSemana);
                 html += '<td data-col="' + col + '" data-dia="' + dia + '">' +
                     App.cellHtml(items, 'entrega', col, dia, App.VACIOS_RECEPCION) + '</td>';
             }
@@ -204,10 +210,10 @@ App.renderRecepcion = function () {
         }
         for (let c = 0; c < App.COLS.length; c++) {
             const col = App.COLS[c];
-            html += '<tr><td>' + colLabel[col] + '</td>';
+            html += '<tr><td>' + colLabel[col] + (col === 'quincenal' ? ' ' + App.htmlPillsSemana() : '') + '</td>';
             for (let r = 0; r < App.RECEPCION_ROWS.length; r++) {
                 const dia = App.RECEPCION_ROWS[r];
-                const items = App.itemsDelDia('entrega', dia, col);
+                const items = App.itemsDelDia('entrega', dia, col).filter(App.pasaFiltroSemana);
                 html += '<td data-col="' + col + '" data-dia="' + dia + '">' +
                     App.cellHtml(items, 'entrega', col, dia, App.VACIOS_RECEPCION) + '</td>';
             }
@@ -329,6 +335,14 @@ App.chips = function (dias) {
     }).join('');
 };
 
+App.chipsEditables = function (p, field) {
+    const dias = p[field] || [];
+    return '<span class="chips-edit">' + App.DIAS.map(function (d) {
+        const activo = dias.indexOf(d.idx) !== -1 ? ' activo' : '';
+        return '<button class="chip-edit' + activo + '" data-id="' + p.id + '" data-field="' + field + '" data-dia="' + d.idx + '" title="' + d.nombre + '">' + d.abbr + '</button>';
+    }).join('') + '</span>';
+};
+
 /* ------------------------------------------------------------
    Ordenamiento de la tabla de proveedores
    ------------------------------------------------------------ */
@@ -390,15 +404,18 @@ App.renderProveedores = function () {
     let html = '';
     for (let i = 0; i < lista.length; i++) {
         const p = lista[i];
+        const freqOpts = ['semanal', 'quincenal13', 'quincenal24', 'mensual'].map(function (k) {
+            return '<option value="' + k + '"' + (p.frecuencia === k ? ' selected' : '') + '>' + App.FRECUENCIA_LABEL[k] + '</option>';
+        }).join('');
         html += '<tr>' +
             '<td>' + App.esc(p.nombre) + '</td>' +
-            '<td>' + App.FRECUENCIA_LABEL[p.frecuencia] + '</td>' +
-            '<td>' + App.chips(p.diasEnvio) + '</td>' +
-            '<td>' + App.chips(p.diasEntrega) + '</td>' +
-            '<td>' + p.transito + '</td>' +
-            '<td>' + p.anticipacion + '</td>' +
-            '<td>' + (p.estricto ? '✔' : '') + '</td>' +
-            '<td>' + (p.gigante ? '✔' : '') + '</td>' +
+            '<td><select class="inline-select" data-id="' + p.id + '" data-field="frecuencia">' + freqOpts + '</select></td>' +
+            '<td>' + App.chipsEditables(p, 'diasEnvio') + '</td>' +
+            '<td>' + App.chipsEditables(p, 'diasEntrega') + '</td>' +
+            '<td><input type="number" class="inline-input" min="0" max="7" value="' + p.transito + '" data-id="' + p.id + '" data-field="transito"></td>' +
+            '<td><input type="number" class="inline-input" min="0" max="7" value="' + p.anticipacion + '" data-id="' + p.id + '" data-field="anticipacion"></td>' +
+            '<td><input type="checkbox" class="inline-check" data-id="' + p.id + '" data-field="estricto"' + (p.estricto ? ' checked' : '') + '></td>' +
+            '<td><input type="checkbox" class="inline-check" data-id="' + p.id + '" data-field="gigante"' + (p.gigante ? ' checked' : '') + '></td>' +
             '<td><button class="btn" data-edit="' + p.id + '">Editar</button> ' +
             '<button class="btn btn-danger" data-del="' + p.id + '">Eliminar</button></td>' +
             '</tr>';

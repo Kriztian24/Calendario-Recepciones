@@ -1482,7 +1482,7 @@
     "posDiaEnvio": 3,
     "posDiaEntrega": 5,
     "sobrescribirEntrega": false,
-    "ordenEnvio": 0,
+    "ordenEnvio": 1,
     "ordenEntrega": 0,
     "id": "corporacion-ecuatoriana-de-licores-y-alimentos-s-a-mtaa9dha"
   },
@@ -1600,7 +1600,7 @@
     "posDiaEnvio": 3,
     "posDiaEntrega": 5,
     "sobrescribirEntrega": false,
-    "ordenEnvio": 0,
+    "ordenEnvio": 2,
     "ordenEntrega": 0,
     "id": "gustafs-s-a-mtaakcnn"
   },
@@ -1647,7 +1647,7 @@
     "posDiaEnvio": 3,
     "posDiaEntrega": 1,
     "sobrescribirEntrega": false,
-    "ordenEnvio": 0,
+    "ordenEnvio": 3,
     "ordenEntrega": 0,
     "id": "industria-alimenticia-servicios-don-johnny-s-a-s-mtaanr2v"
   },
@@ -1669,7 +1669,7 @@
     "posDiaEnvio": 3,
     "posDiaEntrega": 5,
     "sobrescribirEntrega": false,
-    "ordenEnvio": 0,
+    "ordenEnvio": 4,
     "ordenEntrega": 0,
     "id": "moderna-alimentos-s-a-mtaaoor5"
   },
@@ -1694,7 +1694,7 @@
     "posDiaEnvio": 3,
     "posDiaEntrega": 2,
     "sobrescribirEntrega": false,
-    "ordenEnvio": 0,
+    "ordenEnvio": 5,
     "ordenEntrega": 0,
     "id": "productos-criss-mtaaqgz2"
   },
@@ -1792,7 +1792,7 @@
     "posDiaEnvio": 3,
     "posDiaEntrega": 1,
     "sobrescribirEntrega": false,
-    "ordenEnvio": 0,
+    "ordenEnvio": 6,
     "ordenEntrega": 0,
     "id": "herrera-samaniego-anthony-michael-mtaav3w6"
   },
@@ -1837,7 +1837,7 @@
     "sobrescribirEntrega": false,
     "ordenEnvio": 0,
     "ordenEntrega": 0,
-    "id": "oleaginosas-del-pailon-mtaawlcl"
+    "id": "oleaginosas-del-pailon-mtacrxfy"
   },
   {
     "nombre": "JanitronEcuador S.A.",
@@ -2013,7 +2013,7 @@
     "posDiaEnvio": 3,
     "posDiaEntrega": 1,
     "sobrescribirEntrega": false,
-    "ordenEnvio": 0,
+    "ordenEnvio": 8,
     "ordenEntrega": 0,
     "id": "virumec-s-a-mtab9dp0"
   },
@@ -2068,7 +2068,7 @@
     "posDiaEnvio": 3,
     "posDiaEntrega": 3,
     "sobrescribirEntrega": false,
-    "ordenEnvio": 0,
+    "ordenEnvio": 9,
     "ordenEntrega": 0,
     "id": "agricola-industrial-molinos-amigables-c-a-mtabb406"
   }
