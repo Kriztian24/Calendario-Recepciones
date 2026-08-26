@@ -122,12 +122,46 @@ td:first-child {
             height: 56px;
         }
         .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             color: #fff;
             font-weight: bold;
-            font-size: 1.05em;
             letter-spacing: 0.3px;
         }
-        .nav-logo span { color: #ffc107; }
+        .nav-logo-img {
+            height: 38px;
+            width: auto;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+        .brand-main {
+            position: relative;
+            display: block;
+            height: 1.4em;
+            min-width: 240px;
+            overflow: hidden;
+            font-size: 1.15em;
+            font-weight: 600;
+            color: #fff;
+            line-height: 1.4;
+        }
+        .brand-full, .brand-short {
+            position: absolute;
+            left: 0;
+            top: 0;
+            white-space: nowrap;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .brand-short { opacity: 0; transform: translateX(22px); }
+        .brand-main.animado .brand-full { opacity: 0; transform: translateX(-22px); }
+        .brand-main.animado .brand-short { opacity: 1; transform: translateX(0); }
+        .brand-sub { font-size: 0.68em; font-weight: 400; color: #adb5bd; letter-spacing: 0.3px; }
         .nav-options {
             display: flex;
             gap: 6px;

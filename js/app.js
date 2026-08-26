@@ -158,3 +158,16 @@ App.init = async function () {
 };
 
 App.init();
+
+/* ------------------------------------------------------------
+   Animación marca: alterna Purchase Order Schedule ↔ PO Schedule cada 20s
+   ------------------------------------------------------------ */
+(function () {
+    const el = document.getElementById('brandMain');
+    if (!el) return;
+    let corto = false;
+    setInterval(function () {
+        corto = !corto;
+        el.classList.toggle('animado', corto);
+    }, 5000);
+})();
