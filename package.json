@@ -1,0 +1,12 @@
+{
+  "name": "calendario",
+  "version": "1.0.0",
+  "description": "Calendario de Pedidos y Recepción - servidor compartido con SSE",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}

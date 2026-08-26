@@ -33,9 +33,10 @@ App.FRECUENCIA_LABEL = {
 App.COLS = ['semanal', 'quincenal', 'mensual'];
 
 /* Orden de las filas (días) en cada calendario.
-   El de pedidos empieza en Sábado; el de recepción en Lunes. */
-App.PEDIDOS_ROWS = [6, 0, 1, 2, 3, 4, 5];
-App.RECEPCION_ROWS = [1, 2, 3, 4, 5, 6];
+   El de pedidos empieza en Domingo; el de recepción en Lunes
+   (pero incluye Domingo al final para poder arrastrar allí). */
+App.PEDIDOS_ROWS = [0, 1, 2, 3, 4, 5, 6];
+App.RECEPCION_ROWS = [1, 2, 3, 4, 5, 6, 0];
 
 /* Textos de celdas vacías conocidas, con formato "día|columna" */
 App.VACIOS_PEDIDOS = {

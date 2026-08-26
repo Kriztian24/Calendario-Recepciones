@@ -160,12 +160,15 @@
     // menú contextual propio con la opción de editar (en lugar del
     // menú nativo del navegador).
     const ctxMenu = document.getElementById('ctxMenu');
+    const ctxIr = document.getElementById('ctxIr');
     let ctxSupplierId = null;
+    let ctxSupplierTipo = null;
 
     /* cerrarCtx(): oculta el menú contextual y olvida el proveedor. */
     function cerrarCtx() {
         ctxMenu.classList.add('hidden');
         ctxSupplierId = null;
+        ctxSupplierTipo = null;
     }
 
     document.addEventListener('contextmenu', function (e) {
@@ -173,10 +176,14 @@
         if (!li) { cerrarCtx(); return; }
         e.preventDefault();
         ctxSupplierId = li.dataset.id;
+        ctxSupplierTipo = li.dataset.tipo;
+        // Texto dinámico según el calendario de origen
+        ctxIr.textContent = ctxSupplierTipo === 'envio' ? '➡️ Ir a la recepción' : '⬅️ Ir al pedido';
+        ctxIr.style.display = 'block';
         // Posiciona el menú junto al cursor, sin salirse de la ventana.
         ctxMenu.classList.remove('hidden');
-        const mw = ctxMenu.offsetWidth || 160;
-        const mh = ctxMenu.offsetHeight || 40;
+        const mw = ctxMenu.offsetWidth || 170;
+        const mh = ctxMenu.offsetHeight || 70;
         let x = e.clientX;
         let y = e.clientY;
         if (x + mw > window.innerWidth - 4) x = window.innerWidth - mw - 4;
@@ -190,6 +197,35 @@
         const id = ctxSupplierId;
         cerrarCtx();
         if (id) App.openModal(App.getById(id));
+    });
+
+    // "Ir al pedido/recepción": desplaza hasta la entrada opuesta y la resalta.
+    // Resalta tanto el proveedor (verde fuerte 4.5s) como toda la fila del día (verde bajo 3.5s, sin la cabecera).
+    ctxIr.addEventListener('click', function () {
+        const id = ctxSupplierId;
+        const tipo = ctxSupplierTipo;
+        cerrarCtx();
+        if (!id || !tipo) return;
+        const opuesto = tipo === 'envio' ? 'entrega' : 'envio';
+        const target = document.querySelector('.supplier[data-id="' + id + '"][data-tipo="' + opuesto + '"]');
+        if (!target) {
+            App.toast('⚠️ No se encontró la entrada opuesta.');
+            return;
+        }
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Resaltado del proveedor (fuerte, 4.5s)
+        target.classList.remove('ir-highlight');
+        void target.offsetWidth;
+        target.classList.add('ir-highlight');
+        setTimeout(function () { target.classList.remove('ir-highlight'); }, 8000);
+        // Resaltado sutil de toda la fila del día (5s, solo celdas de datos)
+        const fila = target.closest('tr');
+        if (fila) {
+            fila.classList.remove('dia-highlight');
+            void fila.offsetWidth;
+            fila.classList.add('dia-highlight');
+            setTimeout(function () { fila.classList.remove('dia-highlight'); }, 5000);
+        }
     });
 
     // Se cierra al hacer clic fuera, con Escape, al hacer scroll o al

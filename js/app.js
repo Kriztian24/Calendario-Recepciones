@@ -111,7 +111,7 @@ App.online = true;
    ignora (no hay diferencia contra el estado local). */
 App.connectSocket = function () {
     if (typeof EventSource === 'undefined') return;
-    const es = new EventSource('/api/stream');
+    const es = new EventSource(App.apiUrl('/api/stream'));
     es.onmessage = function (e) {
         try {
             const data = JSON.parse(e.data);

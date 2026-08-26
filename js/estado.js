@@ -82,11 +82,25 @@ App.cache = function () {
     localStorage.setItem(App.KEY, JSON.stringify(App.proveedores));
 };
 
+/* apiUrl(path): construye la URL de la API respetando el prefijo
+   de la Application URL de cPanel (ej. /calendario-pedidos).
+   En local es /api/... y en hosting es /calendario-pedidos/api/... */
+App.apiUrl = function (path) {
+    let base = window.location.pathname.replace(/\/index\.html$/, '');
+    base = base.replace(/\/$/, '');
+    // Si estamos en /calendario-pedidos o /calendario, usar ese prefijo
+    if (base === '/calendario-pedidos' || base === '/calendario') return base + path;
+    // Fallback: detectar por si la URL actual ya incluye el prefijo
+    if (window.location.pathname.indexOf('/calendario-pedidos/') === 0) return '/calendario-pedidos' + path;
+    if (window.location.pathname.indexOf('/calendario/') === 0) return '/calendario' + path;
+    return path;
+};
+
 /* loadRemote(): intenta leer la base de datos del servidor.
    Devuelve true si lo logró; si no, usa la caché local. */
 App.loadRemote = async function () {
     try {
-        const res = await fetch('/api/proveedores', { cache: 'no-store' });
+        const res = await fetch(App.apiUrl('/api/proveedores'), { cache: 'no-store' });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         App.proveedores = (await res.json()).map(App.normalize);
         App.cache();
@@ -179,7 +193,7 @@ App.save = function () {
     const snapshot = JSON.stringify(App.proveedores);
     App._saveChain = App._saveChain.then(async function () {
         try {
-            const res = await fetch('/api/proveedores', {
+            const res = await fetch(App.apiUrl('/api/proveedores'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: snapshot

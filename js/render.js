@@ -119,9 +119,12 @@ App.renderPedidos = function () {
     let html = '';
     for (let r = 0; r < App.PEDIDOS_ROWS.length; r++) {
         const dia = App.PEDIDOS_ROWS[r];
-        // Primera columna: nombre del día + resumen de pedidos.
-        html += '<tr><td>' + App.DIAS[dia].nombre +
-            '<span class="resumen">' + App.resumenHtml(App.resumenDia('envio', dia)) + '</span></td>';
+        // Primera columna: nombre del día + resumen. Si el día no tiene
+        // ningún pedido (en ninguna columna), la fila va en gris atenuado.
+        const res = App.resumenDia('envio', dia);
+        const vacio = (res.semanal + res.quincenal + res.mensual) === 0;
+        html += '<tr' + (vacio ? ' class="dia-vacio"' : '') + '><td>' + App.DIAS[dia].nombre +
+            '<span class="resumen">' + App.resumenHtml(res) + '</span></td>';
         for (let c = 0; c < App.COLS.length; c++) {
             const col = App.COLS[c];
             const items = App.itemsDelDia('envio', dia, col);
@@ -141,9 +144,12 @@ App.renderRecepcion = function () {
     let html = '';
     for (let r = 0; r < App.RECEPCION_ROWS.length; r++) {
         const dia = App.RECEPCION_ROWS[r];
-        // Primera columna: nombre del día + resumen de recepciones.
-        html += '<tr><td>' + App.DIAS[dia].nombre +
-            '<span class="resumen">' + App.resumenHtml(App.resumenDia('entrega', dia)) + '</span></td>';
+        // Primera columna: nombre del día + resumen. Si el día no tiene
+        // ninguna recepción (en ninguna columna), la fila va en gris atenuado.
+        const res = App.resumenDia('entrega', dia);
+        const vacio = (res.semanal + res.quincenal + res.mensual) === 0;
+        html += '<tr' + (vacio ? ' class="dia-vacio"' : '') + '><td>' + App.DIAS[dia].nombre +
+            '<span class="resumen">' + App.resumenHtml(res) + '</span></td>';
         for (let c = 0; c < App.COLS.length; c++) {
             const col = App.COLS[c];
             const items = App.itemsDelDia('entrega', dia, col);

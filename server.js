@@ -82,16 +82,27 @@ function broadcast(data) {
    ------------------------------------------------------------ */
 const server = http.createServer((req, res) => {
     const url = new URL(req.url, 'http://localhost');
+    // cPanel mapea https://dominio.com/calendario-pedidos -> app
+    // Passenger puede enviar /calendario-pedidos/api/... o /api/... según config.
+    // Normalizamos quitando el prefijo base si viene.
+    let basePath = decodeURIComponent(url.pathname);
+    const BASES = ['/calendario-pedidos', '/calendario'];
+    for (const b of BASES) {
+        if (basePath === b) { basePath = '/'; break; }
+        if (basePath.startsWith(b + '/')) { basePath = basePath.slice(b.length); break; }
+    }
+    // Usar basePath normalizado para rutas API
+    const apiPath = basePath;
 
     // API: leer la base de datos
-    if (url.pathname === '/api/proveedores' && req.method === 'GET') {
+    if (apiPath === '/api/proveedores' && req.method === 'GET') {
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify(readDB()));
         return;
     }
 
     // API: guardar la base de datos (reemplaza el arreglo completo)
-    if (url.pathname === '/api/proveedores' && req.method === 'POST') {
+    if (apiPath === '/api/proveedores' && req.method === 'POST') {
         let body = '';
         req.on('data', (c) => { body += c; });
         req.on('end', () => {
@@ -110,7 +121,7 @@ const server = http.createServer((req, res) => {
     }
 
     // Canal de tiempo real (SSE)
-    if (url.pathname === '/api/stream') {
+    if (apiPath === '/api/stream') {
         res.writeHead(200, {
             'Content-Type': 'text/event-stream',
             'Cache-Control': 'no-cache',
@@ -122,8 +133,8 @@ const server = http.createServer((req, res) => {
         return;
     }
 
-    // Archivos estáticos
-    let pathname = decodeURIComponent(url.pathname);
+    // Archivos estáticos (usar basePath normalizado)
+    let pathname = basePath;
     if (pathname === '/') pathname = '/index.html';
     const file = path.join(ROOT, '.' + pathname);
     if (!file.startsWith(ROOT)) {

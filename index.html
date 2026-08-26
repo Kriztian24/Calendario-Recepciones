@@ -14,6 +14,7 @@
         <div class="nav-options">
             <button id="btnCalendario" class="nav-btn active">📅 Calendario</button>
             <button id="btnProveedores" class="nav-btn">🗂️ Proveedores</button>
+            <button id="btnLogout" class="nav-btn" title="Cerrar sesión" style="opacity:0.7;font-size:0.85em">🔒 Salir</button>
         </div>
     </nav>
 
@@ -184,10 +185,33 @@
     <!-- Menú contextual de proveedores (clic derecho) -->
     <div id="ctxMenu" class="ctx-menu hidden">
         <button class="ctx-item" id="ctxEdit">✏️ Editar proveedor</button>
+        <button class="ctx-item" id="ctxIr"></button>
     </div>
 
-    <!-- Scripts en orden: datos -> estado -> render -> drag -> proveedores -> app -->
+    <!-- Bloqueo por patrón (M) - pantalla completa -->
+    <div id="bloqueoPatron" class="patron-overlay hidden">
+        <div class="patron-box">
+            <h3>🔒 Ingresa el patrón</h3>
+            <p class="patron-hint">Dibuja el patrón</p>
+            <div id="patronGrid" class="patron-grid">
+                <button class="punto" data-p="1" aria-label="1"></button>
+                <button class="punto" data-p="2" aria-label="2"></button>
+                <button class="punto" data-p="3" aria-label="3"></button>
+                <button class="punto" data-p="4" aria-label="4"></button>
+                <button class="punto" data-p="5" aria-label="5"></button>
+                <button class="punto" data-p="6" aria-label="6"></button>
+                <button class="punto" data-p="7" aria-label="7"></button>
+                <button class="punto" data-p="8" aria-label="8"></button>
+                <button class="punto" data-p="9" aria-label="9"></button>
+                <svg id="patronSvg" class="patron-svg" viewBox="0 0 300 300" preserveAspectRatio="none"></svg>
+            </div>
+            <p id="patronMsg" class="patron-msg"></p>
+        </div>
+    </div>
+
+    <!-- Scripts en orden: datos -> patron -> estado -> render -> drag -> proveedores -> app -->
     <script src="js/datos.js"></script>
+    <script src="js/patron.js"></script>
     <script src="js/clave.js"></script>
     <script src="js/estado.js"></script>
     <script src="js/render.js"></script>
