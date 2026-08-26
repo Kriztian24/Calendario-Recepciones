@@ -62,6 +62,17 @@ App.normalize = function (p) {
    Se llenan con App.loadRemote() durante el arranque. */
 App.proveedores = [];
 
+/* Vista invertida (frecuencias como filas, días como columnas).
+   Global para ambos calendarios, persistida por usuario. Por defecto invertida. */
+App.vistaInvertida = (function () {
+    try { return JSON.parse(localStorage.getItem('vistaInvertida') || 'true'); } catch (e) { return true; }
+})();
+App.setVistaInvertida = function (v) {
+    App.vistaInvertida = !!v;
+    try { localStorage.setItem('vistaInvertida', JSON.stringify(App.vistaInvertida)); } catch (e) {}
+    App.renderCalendario();
+};
+
 /* loadLocal(): lee la caché de localStorage; si no existe (o el
    JSON está corrupto) usa la semilla incrustada. */
 App.loadLocal = function () {

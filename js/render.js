@@ -113,25 +113,55 @@ App.resumenHtml = function (res) {
 /* ------------------------------------------------------------
    renderPedidos(): dibuja la tabla de gestión de pedidos.
    Cada celda es un destino de drag (td[data-col][data-dia]).
+   En vista normal: filas = días, cols = frecuencias.
+   En vista invertida: filas = frecuencias, cols = días (resumen en cabecera).
    ------------------------------------------------------------ */
 App.renderPedidos = function () {
     const tb = document.getElementById('tbodyPedidos');
+    const theadTr = document.querySelector('#tablaPedidos thead tr');
+    const colLabel = { semanal: 'ROTACIÓN SEMANAL', quincenal: 'QUINCENALES (Sem. 1 y 3 / Sem. 2 y 4)', mensual: 'MENSUALES Y CICLOS LARGOS' };
     let html = '';
-    for (let r = 0; r < App.PEDIDOS_ROWS.length; r++) {
-        const dia = App.PEDIDOS_ROWS[r];
-        // Primera columna: nombre del día + resumen. Si el día no tiene
-        // ningún pedido (en ninguna columna), la fila va en gris atenuado.
-        const res = App.resumenDia('envio', dia);
-        const vacio = (res.semanal + res.quincenal + res.mensual) === 0;
-        html += '<tr' + (vacio ? ' class="dia-vacio"' : '') + '><td>' + App.DIAS[dia].nombre +
-            '<span class="resumen">' + App.resumenHtml(res) + '</span></td>';
+    if (!App.vistaInvertida) {
+        // Cabecera normal
+        if (theadTr) theadTr.innerHTML = '<th>DÍA</th><th>ROTACIÓN SEMANAL</th><th>QUINCENALES (Sem. 1 y 3 / Sem. 2 y 4)</th><th>MENSUALES Y CICLOS LARGOS</th>';
+        for (let r = 0; r < App.PEDIDOS_ROWS.length; r++) {
+            const dia = App.PEDIDOS_ROWS[r];
+            const res = App.resumenDia('envio', dia);
+            const vacio = (res.semanal + res.quincenal + res.mensual) === 0;
+            html += '<tr' + (vacio ? ' class="dia-vacio"' : '') + '><td>' + App.DIAS[dia].nombre +
+                '<span class="resumen">' + App.resumenHtml(res) + '</span></td>';
+            for (let c = 0; c < App.COLS.length; c++) {
+                const col = App.COLS[c];
+                const items = App.itemsDelDia('envio', dia, col);
+                html += '<td data-col="' + col + '" data-dia="' + dia + '">' +
+                    App.cellHtml(items, 'envio', col, dia, App.VACIOS_PEDIDOS) + '</td>';
+            }
+            html += '</tr>';
+        }
+    } else {
+        // Cabecera invertida: FRECUENCIA + días (Dom..Sáb) con resumen en cada th
+        if (theadTr) {
+            let thH = '<th>FRECUENCIA</th>';
+            for (let r = 0; r < App.PEDIDOS_ROWS.length; r++) {
+                const dia = App.PEDIDOS_ROWS[r];
+                const res = App.resumenDia('envio', dia);
+                const vacio = (res.semanal + res.quincenal + res.mensual) === 0;
+                thH += '<th' + (vacio ? ' class="dia-vacio-col"' : '') + '>' + App.DIAS[dia].nombre +
+                    '<span class="resumen">' + App.resumenHtml(res) + '</span></th>';
+            }
+            theadTr.innerHTML = thH;
+        }
         for (let c = 0; c < App.COLS.length; c++) {
             const col = App.COLS[c];
-            const items = App.itemsDelDia('envio', dia, col);
-            html += '<td data-col="' + col + '" data-dia="' + dia + '">' +
-                App.cellHtml(items, 'envio', col, dia, App.VACIOS_PEDIDOS) + '</td>';
+            html += '<tr><td>' + colLabel[col] + '</td>';
+            for (let r = 0; r < App.PEDIDOS_ROWS.length; r++) {
+                const dia = App.PEDIDOS_ROWS[r];
+                const items = App.itemsDelDia('envio', dia, col);
+                html += '<td data-col="' + col + '" data-dia="' + dia + '">' +
+                    App.cellHtml(items, 'envio', col, dia, App.VACIOS_PEDIDOS) + '</td>';
+            }
+            html += '</tr>';
         }
-        html += '</tr>';
     }
     tb.innerHTML = html;
 };
@@ -141,22 +171,48 @@ App.renderPedidos = function () {
    ------------------------------------------------------------ */
 App.renderRecepcion = function () {
     const tb = document.getElementById('tbodyRecepcion');
+    const theadTr = document.querySelector('#tablaRecepcion thead tr');
+    const colLabel = { semanal: 'RECEPCIÓN ROTACIÓN / SEMANAL', quincenal: 'RECEPCIÓN QUINCENAL', mensual: 'RECEPCIÓN MENSUAL' };
     let html = '';
-    for (let r = 0; r < App.RECEPCION_ROWS.length; r++) {
-        const dia = App.RECEPCION_ROWS[r];
-        // Primera columna: nombre del día + resumen. Si el día no tiene
-        // ninguna recepción (en ninguna columna), la fila va en gris atenuado.
-        const res = App.resumenDia('entrega', dia);
-        const vacio = (res.semanal + res.quincenal + res.mensual) === 0;
-        html += '<tr' + (vacio ? ' class="dia-vacio"' : '') + '><td>' + App.DIAS[dia].nombre +
-            '<span class="resumen">' + App.resumenHtml(res) + '</span></td>';
+    if (!App.vistaInvertida) {
+        if (theadTr) theadTr.innerHTML = '<th>DÍA</th><th>RECEPCIÓN ROTACIÓN / SEMANAL</th><th>RECEPCIÓN QUINCENAL</th><th>RECEPCIÓN MENSUAL</th>';
+        for (let r = 0; r < App.RECEPCION_ROWS.length; r++) {
+            const dia = App.RECEPCION_ROWS[r];
+            const res = App.resumenDia('entrega', dia);
+            const vacio = (res.semanal + res.quincenal + res.mensual) === 0;
+            html += '<tr' + (vacio ? ' class="dia-vacio"' : '') + '><td>' + App.DIAS[dia].nombre +
+                '<span class="resumen">' + App.resumenHtml(res) + '</span></td>';
+            for (let c = 0; c < App.COLS.length; c++) {
+                const col = App.COLS[c];
+                const items = App.itemsDelDia('entrega', dia, col);
+                html += '<td data-col="' + col + '" data-dia="' + dia + '">' +
+                    App.cellHtml(items, 'entrega', col, dia, App.VACIOS_RECEPCION) + '</td>';
+            }
+            html += '</tr>';
+        }
+    } else {
+        if (theadTr) {
+            let thH = '<th>FRECUENCIA</th>';
+            for (let r = 0; r < App.RECEPCION_ROWS.length; r++) {
+                const dia = App.RECEPCION_ROWS[r];
+                const res = App.resumenDia('entrega', dia);
+                const vacio = (res.semanal + res.quincenal + res.mensual) === 0;
+                thH += '<th' + (vacio ? ' class="dia-vacio-col"' : '') + '>' + App.DIAS[dia].nombre +
+                    '<span class="resumen">' + App.resumenHtml(res) + '</span></th>';
+            }
+            theadTr.innerHTML = thH;
+        }
         for (let c = 0; c < App.COLS.length; c++) {
             const col = App.COLS[c];
-            const items = App.itemsDelDia('entrega', dia, col);
-            html += '<td data-col="' + col + '" data-dia="' + dia + '">' +
-                App.cellHtml(items, 'entrega', col, dia, App.VACIOS_RECEPCION) + '</td>';
+            html += '<tr><td>' + colLabel[col] + '</td>';
+            for (let r = 0; r < App.RECEPCION_ROWS.length; r++) {
+                const dia = App.RECEPCION_ROWS[r];
+                const items = App.itemsDelDia('entrega', dia, col);
+                html += '<td data-col="' + col + '" data-dia="' + dia + '">' +
+                    App.cellHtml(items, 'entrega', col, dia, App.VACIOS_RECEPCION) + '</td>';
+            }
+            html += '</tr>';
         }
-        html += '</tr>';
     }
     tb.innerHTML = html;
 };

@@ -171,6 +171,24 @@ td:first-child {
             background-color: #cfe2ff;
         }
         .supplier.buscar-baja { opacity: 0.25; }
+        /* Switch vista invertida */
+        .switch-vista {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9em;
+            color: #495057;
+            cursor: pointer;
+            user-select: none;
+            border: 1px solid #ced4da;
+            border-radius: 20px;
+            padding: 6px 12px;
+            background: #fff;
+        }
+        .switch-vista input { accent-color: #007bff; }
+        /* Cabecera de día vacía en vista invertida (th con resumen sin pedidos) */
+        th.dia-vacio-col { background-color: #f1f3f5 !important; color: #adb5bd; }
+        th.dia-vacio-col .resumen .rvacio { color: #adb5bd; }
 
 .supplier {
             cursor: grab;

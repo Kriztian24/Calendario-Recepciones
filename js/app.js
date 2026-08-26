@@ -62,6 +62,16 @@ document.getElementById('buscarProveedor').addEventListener('input', function ()
     App.renderCalendario();
 });
 
+/* Switch vista invertida (frecuencias ↔ días), global y persistido */
+(function () {
+    const chk = document.getElementById('chkInvertir');
+    if (!chk) return;
+    chk.checked = !!App.vistaInvertida;
+    chk.addEventListener('change', function () {
+        App.setVistaInvertida(this.checked);
+    });
+})();
+
 /* Imprimir / PDF: usa el diálogo de impresión del navegador. */
 document.getElementById('btnImprimir').addEventListener('click', function () {
     window.print();
