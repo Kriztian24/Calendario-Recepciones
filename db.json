@@ -25,7 +25,7 @@
     "ordenEntrega": 0
   },
   {
-    "id": "la-chilenita",
+    "id": "laminados-industrial-la-chilenita-mta9k62x",
     "nombre": "Laminados Industrial (La Chilenita)",
     "frecuencia": "semanal",
     "diasEnvio": [
@@ -42,7 +42,7 @@
     "posDiaEnvio": 6,
     "posDiaEntrega": 1,
     "sobrescribirEntrega": false,
-    "ordenEnvio": 4,
+    "ordenEnvio": 0,
     "ordenEntrega": 0
   },
   {
@@ -67,7 +67,7 @@
     "ordenEntrega": 0
   },
   {
-    "id": "heineken",
+    "id": "heineken-ecuador-s-a-mtab2s4q",
     "nombre": "Heineken Ecuador S.A.",
     "frecuencia": "mensual",
     "diasEnvio": [
@@ -87,25 +87,23 @@
     ],
     "transito": 1,
     "anticipacion": 0,
-    "estricto": true,
+    "estricto": false,
     "gigante": false,
     "nota": "Atiende orden realizada el domingo para entrega lunes",
     "posDiaEnvio": 0,
-    "posDiaEntrega": 1,
+    "posDiaEntrega": 2,
     "sobrescribirEntrega": false,
     "ordenEnvio": 0,
     "ordenEntrega": 0
   },
   {
-    "id": "la-fabril",
+    "id": "la-fabril-s-a-mta95ne8",
     "nombre": "La Fabril S.A.",
     "frecuencia": "semanal",
     "diasEnvio": [
       1,
       2,
-      3,
-      4,
-      5
+      3
     ],
     "diasEntrega": [
       3,
@@ -119,7 +117,7 @@
     "nota": "Prep Domingo -> Envía Lunes para descongestionar recepción el Jueves",
     "posDiaEnvio": 1,
     "posDiaEntrega": 5,
-    "sobrescribirEntrega": true,
+    "sobrescribirEntrega": false,
     "ordenEnvio": 0,
     "ordenEntrega": 0
   },
@@ -251,7 +249,7 @@
     "ordenEntrega": 0
   },
   {
-    "id": "pydaco",
+    "id": "pydaco-cia-ltda-mta9kz6v",
     "nombre": "Pydaco Cía. Ltda.",
     "frecuencia": "semanal",
     "diasEnvio": [
@@ -294,15 +292,13 @@
     "ordenEntrega": 0
   },
   {
-    "id": "anahi-02",
-    "nombre": "Distribuidora Anahi S.A. (Sucursal 02)",
+    "id": "distribuidora-anahi-s-a-sucursal-isidro-ayora-mta9j10k",
+    "nombre": "Distribuidora Anahi S.A. (Sucursal Isidro Ayora)",
     "frecuencia": "semanal",
     "diasEnvio": [
-      1,
       2
     ],
     "diasEntrega": [
-      2,
       3
     ],
     "transito": 1,
@@ -317,7 +313,7 @@
     "ordenEntrega": 0
   },
   {
-    "id": "deanova",
+    "id": "deanova-s-a-mta8y8pz",
     "nombre": "Deanova S.A.",
     "frecuencia": "semanal",
     "diasEnvio": [
@@ -368,10 +364,10 @@
     "posDiaEntrega": 5,
     "sobrescribirEntrega": true,
     "ordenEnvio": 0,
-    "ordenEntrega": 0
+    "ordenEntrega": 1
   },
   {
-    "id": "arreaga-ayala",
+    "id": "arreaga-ayala-byron-adalberto-mta8wbyp",
     "nombre": "Arreaga Ayala Byron Adalberto",
     "frecuencia": "semanal",
     "diasEnvio": [
@@ -392,7 +388,7 @@
     "ordenEntrega": 0
   },
   {
-    "id": "panificadora-industrial",
+    "id": "panificadora-industrial-cia-ltda-mta97u17",
     "nombre": "Panificadora Industrial Cia. Ltda.",
     "frecuencia": "semanal",
     "diasEnvio": [
@@ -410,16 +406,17 @@
     "posDiaEntrega": 4,
     "sobrescribirEntrega": false,
     "ordenEnvio": 0,
-    "ordenEntrega": 2
+    "ordenEntrega": 0
   },
   {
-    "id": "villegas-fajardo",
+    "id": "villegas-fajardo-claudio-kumar-mta9mrcp",
     "nombre": "Villegas Fajardo Claudio Kumar",
     "frecuencia": "semanal",
     "diasEnvio": [
       3
     ],
     "diasEntrega": [
+      3,
       4
     ],
     "transito": 1,
@@ -431,7 +428,7 @@
     "posDiaEntrega": 4,
     "sobrescribirEntrega": false,
     "ordenEnvio": 0,
-    "ordenEntrega": 3
+    "ordenEntrega": 0
   },
   {
     "id": "saliuper",
@@ -476,30 +473,28 @@
     "ordenEntrega": 4
   },
   {
-    "id": "ac-bebidas",
-    "nombre": "Bebidas Arcacontinental Ecuador (Arcador C.L.)",
+    "id": "bebidas-arcacontinental-ecuador-arcador-c-l-sucusal-lomas-mta9pqwh",
+    "nombre": "Bebidas Arcacontinental Ecuador Arcador C.L. (Sucusal Lomas)",
     "frecuencia": "semanal",
     "diasEnvio": [
-      3,
       5
     ],
     "diasEntrega": [
-      1,
-      4
+      1
     ],
     "transito": 3,
-    "anticipacion": 1,
+    "anticipacion": 0,
     "estricto": true,
     "gigante": true,
-    "nota": "Pedido en borrador Miércoles, enviado Jueves para entrega Lunes Isidro PC",
-    "posDiaEnvio": 4,
+    "nota": "",
+    "posDiaEnvio": 5,
     "posDiaEntrega": 1,
-    "sobrescribirEntrega": true,
+    "sobrescribirEntrega": false,
     "ordenEnvio": 0,
     "ordenEntrega": 0
   },
   {
-    "id": "dazulthi",
+    "id": "distribuidora-dazulthi-s-a-s-mta9jjrd",
     "nombre": "Distribuidora Dazulthi S.A.S.",
     "frecuencia": "semanal",
     "diasEnvio": [
@@ -517,7 +512,7 @@
     "posDiaEntrega": 5,
     "sobrescribirEntrega": false,
     "ordenEnvio": 0,
-    "ordenEntrega": 0
+    "ordenEntrega": 2
   },
   {
     "id": "gruvalcorp",
@@ -538,7 +533,7 @@
     "posDiaEntrega": 5,
     "sobrescribirEntrega": false,
     "ordenEnvio": 0,
-    "ordenEntrega": 0
+    "ordenEntrega": 3
   },
   {
     "id": "piggis",
@@ -559,7 +554,7 @@
     "posDiaEntrega": 5,
     "sobrescribirEntrega": false,
     "ordenEnvio": 0,
-    "ordenEntrega": 0
+    "ordenEntrega": 4
   },
   {
     "id": "cafrilosa",
@@ -580,7 +575,7 @@
     "posDiaEntrega": 5,
     "sobrescribirEntrega": false,
     "ordenEnvio": 0,
-    "ordenEntrega": 0
+    "ordenEntrega": 5
   },
   {
     "id": "reylacteos",
@@ -601,7 +596,7 @@
     "posDiaEntrega": 5,
     "sobrescribirEntrega": false,
     "ordenEnvio": 0,
-    "ordenEntrega": 0
+    "ordenEntrega": 6
   },
   {
     "id": "foproca",
@@ -622,10 +617,10 @@
     "posDiaEntrega": 5,
     "sobrescribirEntrega": false,
     "ordenEnvio": 0,
-    "ordenEntrega": 0
+    "ordenEntrega": 7
   },
   {
-    "id": "cerela",
+    "id": "cerela-guillermina-cevallos-intriago-mta9vzjj",
     "nombre": "Cerela Guillermina Cevallos Intriago",
     "frecuencia": "quincenal24",
     "diasEnvio": [
@@ -638,7 +633,7 @@
     "anticipacion": 0,
     "estricto": true,
     "gigante": false,
-    "nota": "Lead time 8 horas (Mismo día)",
+    "nota": "8 horas (Mismo día)",
     "posDiaEnvio": 5,
     "posDiaEntrega": 5,
     "sobrescribirEntrega": false,
@@ -646,8 +641,8 @@
     "ordenEntrega": 0
   },
   {
-    "id": "anahi-01",
-    "nombre": "Distribuidora Anahi S.A. (Sucursal 01)",
+    "id": "distribuidora-anahi-s-a-sucursal-lomas-mta9ih81",
+    "nombre": "Distribuidora Anahi S.A. (Sucursal Lomas)",
     "frecuencia": "semanal",
     "diasEnvio": [
       5,
@@ -664,7 +659,7 @@
     "posDiaEnvio": 6,
     "posDiaEntrega": 1,
     "sobrescribirEntrega": false,
-    "ordenEnvio": 3,
+    "ordenEnvio": 0,
     "ordenEntrega": 0
   },
   {
@@ -764,18 +759,22 @@
     "ordenEntrega": 0
   },
   {
-    "id": "induquiclor",
+    "id": "induquiclor-s-a-mtab4jdh",
     "nombre": "Induquiclor S.A.",
     "frecuencia": "mensual",
     "diasEnvio": [
-      4
+      1,
+      2,
+      3,
+      4,
+      5
     ],
     "diasEntrega": [
       1
     ],
     "transito": 4,
     "anticipacion": 1,
-    "estricto": true,
+    "estricto": false,
     "gigante": false,
     "nota": "Prep Miércoles ➔ Envía Jueves para entrega Lunes (Ruta Daule)",
     "posDiaEnvio": 4,
@@ -806,7 +805,7 @@
     "ordenEntrega": 0
   },
   {
-    "id": "pepsico",
+    "id": "pepsico-alimentos-ecuador-cia-ltda-mta9z5pl",
     "nombre": "Pepsico Alimentos Ecuador Cia. Ltda.",
     "frecuencia": "quincenal13",
     "diasEnvio": [
@@ -827,7 +826,7 @@
     "ordenEntrega": 0
   },
   {
-    "id": "macias-macias",
+    "id": "macias-macias-angel-lizandro-mta9tjg6",
     "nombre": "Macias Macias Angel Lizandro",
     "frecuencia": "quincenal13",
     "diasEnvio": [
@@ -842,8 +841,8 @@
     "anticipacion": 1,
     "estricto": false,
     "gigante": false,
-    "nota": "Prep Domingo ➔ Envía Lunes",
-    "posDiaEnvio": 1,
+    "nota": "Prep Lunes ➔ Envía Martes",
+    "posDiaEnvio": 2,
     "posDiaEntrega": 3,
     "sobrescribirEntrega": false,
     "ordenEnvio": 0,
@@ -871,20 +870,25 @@
     "ordenEntrega": 0
   },
   {
-    "id": "colombina",
+    "id": "distribuidora-colombina-del-ecuador-s-a-mta9sfia",
     "nombre": "Distribuidora Colombina del Ecuador S.A.",
     "frecuencia": "quincenal13",
     "diasEnvio": [
-      2
+      1,
+      2,
+      3,
+      4,
+      5
     ],
     "diasEntrega": [
+      2,
       5
     ],
     "transito": 3,
     "anticipacion": 0,
-    "estricto": true,
+    "estricto": false,
     "gigante": false,
-    "nota": "Martes pedido estricto",
+    "nota": "Martes pedido",
     "posDiaEnvio": 2,
     "posDiaEntrega": 5,
     "sobrescribirEntrega": false,
@@ -892,7 +896,7 @@
     "ordenEntrega": 0
   },
   {
-    "id": "villavicencio",
+    "id": "villavicencio-villafuerte-dally-dalila-mtaa1dgp",
     "nombre": "Villavicencio Villafuerte Dally Dalila",
     "frecuencia": "quincenal24",
     "diasEnvio": [
@@ -914,9 +918,9 @@
     "ordenEntrega": 0
   },
   {
-    "id": "alpina",
+    "id": "alpina-productos-alimenticios-alpiecuador-s-a-mta9990l",
     "nombre": "Alpina Productos Alimenticios Alpiecuador S.A.",
-    "frecuencia": "quincenal13",
+    "frecuencia": "semanal",
     "diasEnvio": [
       3,
       4
@@ -933,7 +937,7 @@
     "posDiaEntrega": 5,
     "sobrescribirEntrega": false,
     "ordenEnvio": 0,
-    "ordenEntrega": 0
+    "ordenEntrega": 8
   },
   {
     "id": "dacendi",
@@ -1026,16 +1030,45 @@
     "ordenEntrega": 0
   },
   {
-    "nombre": "Kristian Aguayo",
-    "frecuencia": "semanal",
+    "nombre": "Kristel Monica Martinez Perez",
+    "frecuencia": "mensual",
     "diasEnvio": [
       1,
+      2,
       3,
+      4,
       5
     ],
     "diasEntrega": [
       2,
+      3,
       4,
+      5,
+      6
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "No tiene Dia de entrega Max 4-5 Dias",
+    "posDiaEnvio": 4,
+    "posDiaEntrega": 2,
+    "sobrescribirEntrega": false,
+    "id": "kristel-monica-martinez-perez-mtab07zt",
+    "ordenEnvio": 0,
+    "ordenEntrega": 0
+  },
+  {
+    "nombre": "Lopez Salazar Jasmin Gabriela",
+    "frecuencia": "semanal",
+    "diasEnvio": [
+      0,
+      1,
+      6
+    ],
+    "diasEntrega": [
+      2,
+      3,
       6
     ],
     "transito": 1,
@@ -1046,8 +1079,997 @@
     "posDiaEnvio": 1,
     "posDiaEntrega": 2,
     "sobrescribirEntrega": false,
-    "id": "kristian-aguayo-mt0xplei",
     "ordenEnvio": 0,
-    "ordenEntrega": 0
+    "ordenEntrega": 0,
+    "id": "lopez-salazar-jasmin-gabriela-mta97b6k"
+  },
+  {
+    "nombre": "The Tesalia Spring Company S.A.",
+    "frecuencia": "semanal",
+    "diasEnvio": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "diasEntrega": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 2,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "the-tesalia-spring-company-s-a-mta9c8rw"
+  },
+  {
+    "nombre": "Alsodi S.A. (Sucursal Lomas)",
+    "frecuencia": "semanal",
+    "diasEnvio": [
+      5,
+      6
+    ],
+    "diasEntrega": [
+      1
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 6,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "alsodi-s-a-sucursal-lomas-mta9gnjv"
+  },
+  {
+    "nombre": "Alsodi S.A. (Sucursal Isidro Ayora)",
+    "frecuencia": "semanal",
+    "diasEnvio": [
+      2
+    ],
+    "diasEntrega": [
+      4
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 2,
+    "posDiaEntrega": 4,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "alsodi-s-a-sucursal-isidro-ayora-mta9fbin"
+  },
+  {
+    "nombre": "Alsodi S.A. (Sucursal Pedro Carbo)",
+    "frecuencia": "semanal",
+    "diasEnvio": [
+      1
+    ],
+    "diasEntrega": [
+      3
+    ],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 3,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "alsodi-s-a-sucursal-pedro-carbo-mta9gcc2"
+  },
+  {
+    "nombre": "Distribuidora Anahi S.A. (Sucursal Pedro Carbo)",
+    "frecuencia": "semanal",
+    "diasEnvio": [
+      1
+    ],
+    "diasEntrega": [
+      2
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 2,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "distribuidora-anahi-s-a-sucursal-pedro-carbo-mta9hpgf"
+  },
+  {
+    "nombre": "Rodriguez Martinez Mildre Alexandra",
+    "frecuencia": "semanal",
+    "diasEnvio": [
+      4
+    ],
+    "diasEntrega": [
+      5
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 4,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 9,
+    "id": "rodriguez-martinez-mildre-alexandra-mta9lw7u"
+  },
+  {
+    "nombre": "Bebidas Arcacontinental Ecuador Arcador C.L. (Sucusal IA y PC)",
+    "frecuencia": "semanal",
+    "diasEnvio": [
+      3
+    ],
+    "diasEntrega": [
+      4
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": true,
+    "nota": "",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 4,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "bebidas-arcacontinental-ecuador-arcador-c-l-sucusal-ia-y-pc-mta9pkkr"
+  },
+  {
+    "nombre": "Arrelencosque S.A.",
+    "frecuencia": "quincenal24",
+    "diasEnvio": [
+      2
+    ],
+    "diasEntrega": [
+      3
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 2,
+    "posDiaEntrega": 3,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "arrelencosque-s-a-mta9w6th"
+  },
+  {
+    "nombre": "Distribuidora DAIN S.A.",
+    "frecuencia": "quincenal24",
+    "diasEnvio": [
+      1
+    ],
+    "diasEntrega": [
+      2
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 2,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "distribuidora-dain-s-a-mta9xb64"
+  },
+  {
+    "nombre": "Marcseal S.A.",
+    "frecuencia": "quincenal24",
+    "diasEnvio": [
+      0,
+      1
+    ],
+    "diasEntrega": [
+      2,
+      3
+    ],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Pedido Maximo Lunes 3:00pm",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 2,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "marcseal-s-a-mta9yofj"
+  },
+  {
+    "nombre": "Toala Nuñez Freddy Michel",
+    "frecuencia": "quincenal13",
+    "diasEnvio": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "diasEntrega": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Pedidos Hasta Medio Dia despacha el dia siguiente",
+    "posDiaEnvio": 5,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "toala-nunez-freddy-michel-mtaa0ywb"
+  },
+  {
+    "nombre": "360 Corp S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "diasEntrega": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Pedidos Max 14:00 - Despacha segun su logistica",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 3,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "360-corp-s-a-mtaa4aoa"
+  },
+  {
+    "nombre": "A3GOD Trade Company S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      4,
+      5
+    ],
+    "diasEntrega": [
+      1,
+      3
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 5,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "a3god-trade-company-s-a-mtaa455j"
+  },
+  {
+    "nombre": "Asertia Comercial S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "diasEntrega": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "transito": 3,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 5,
+    "posDiaEntrega": 2,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "asertia-comercial-s-a-mtaa5kcq"
+  },
+  {
+    "nombre": "ATW Ecuador S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1
+    ],
+    "diasEntrega": [
+      3
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 3,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "atw-ecuador-s-a-mtaa669a"
+  },
+  {
+    "nombre": "Candyplanet S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1,
+      2
+    ],
+    "diasEntrega": [
+      3,
+      4
+    ],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Recibe pedido por la mañana",
+    "posDiaEnvio": 2,
+    "posDiaEntrega": 3,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "candyplanet-s-a-mtaa8444"
+  },
+  {
+    "nombre": "Corporacion Ecuatoriana de Licores y Alimentos S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "diasEntrega": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Despacha Luego de 48 de haber hecho el pedido",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "corporacion-ecuatoriana-de-licores-y-alimentos-s-a-mtaa9dha"
+  },
+  {
+    "nombre": "Dimevar Cia. Ltda.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1,
+      2
+    ],
+    "diasEntrega": [
+      3
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Pedido Max 3:00pm",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 3,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "dimevar-cia-ltda-mtaaaa4b"
+  },
+  {
+    "nombre": "Divalso Cia. Ltda.",
+    "frecuencia": "semanal",
+    "diasEnvio": [
+      1
+    ],
+    "diasEntrega": [
+      3,
+      4
+    ],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 3,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "divalso-cia-ltda-mtaab7r5"
+  },
+  {
+    "nombre": "DMujeres S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "diasEntrega": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Despacha en 48Horas",
+    "posDiaEnvio": 5,
+    "posDiaEntrega": 2,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "dmujeres-s-a-mtaaiux0"
+  },
+  {
+    "nombre": "Felmova S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1
+    ],
+    "diasEntrega": [
+      2,
+      4
+    ],
+    "transito": 3,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 4,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "felmova-s-a-mtaakj7w"
+  },
+  {
+    "nombre": "Gustafs S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1,
+      2,
+      3
+    ],
+    "diasEntrega": [
+      5
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "gustafs-s-a-mtaakcnn"
+  },
+  {
+    "nombre": "Hularuss Cia. Ltda.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1,
+      3
+    ],
+    "diasEntrega": [
+      5
+    ],
+    "transito": 4,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 1,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "hularuss-cia-ltda-mtaalccg"
+  },
+  {
+    "nombre": "Industria Alimenticia-Servicios Don Johnny S.A.S.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1,
+      2,
+      3
+    ],
+    "diasEntrega": [
+      1,
+      2,
+      3
+    ],
+    "transito": 5,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "industria-alimenticia-servicios-don-johnny-s-a-s-mtaanr2v"
+  },
+  {
+    "nombre": "Moderna Alimentos S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      3
+    ],
+    "diasEntrega": [
+      5,
+      6
+    ],
+    "transito": 3,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "moderna-alimentos-s-a-mtaaoor5"
+  },
+  {
+    "nombre": "Productos Criss",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "diasEntrega": [
+      2,
+      3
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "pedidos hasta 12pm, los pedidos se ingresan el viernes",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 2,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "productos-criss-mtaaqgz2"
+  },
+  {
+    "nombre": "RSD Distribuciones",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "diasEntrega": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Despacha Luego de 48 de haber hecho el pedido",
+    "posDiaEnvio": 2,
+    "posDiaEntrega": 4,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "rsd-distribuciones-mtaarpng"
+  },
+  {
+    "nombre": "Sucesores de Jacobo Paredes M S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      2
+    ],
+    "diasEntrega": [
+      4
+    ],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 2,
+    "posDiaEntrega": 4,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "sucesores-de-jacobo-paredes-m-s-a-mtaasn49"
+  },
+  {
+    "nombre": "Devies Corp S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1,
+      2,
+      3
+    ],
+    "diasEntrega": [
+      4,
+      5
+    ],
+    "transito": 3,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 2,
+    "posDiaEntrega": 4,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "devies-corp-s-a-mtaatjze"
+  },
+  {
+    "nombre": "Herrera Samaniego Anthony Michael",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "diasEntrega": [
+      1
+    ],
+    "transito": 5,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "herrera-samaniego-anthony-michael-mtaav3w6"
+  },
+  {
+    "nombre": "Litzer S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      4
+    ],
+    "diasEntrega": [
+      1,
+      5
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 4,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "litzer-s-a-mtaavvdk"
+  },
+  {
+    "nombre": "Oleaginosas del Pailon",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      3
+    ],
+    "diasEntrega": [
+      5
+    ],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "oleaginosas-del-pailon-mtaawlcl"
+  },
+  {
+    "nombre": "JanitronEcuador S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      4,
+      5
+    ],
+    "diasEntrega": [
+      1
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 4,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "janitronecuador-s-a-mtaax9gp"
+  },
+  {
+    "nombre": "SilvaHogar S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "diasEntrega": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "transito": 3,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Depacha luego de 3 Dias de Recibir pedido",
+    "posDiaEnvio": 4,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "silvahogar-s-a-mtaaymzn"
+  },
+  {
+    "nombre": "Gomez Kocher Adolfo Christian",
+    "frecuencia": "semanal",
+    "diasEnvio": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "diasEntrega": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "transito": 2,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Pedido se despacha luego de 2 dias",
+    "posDiaEnvio": 4,
+    "posDiaEntrega": 6,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "gomez-kocher-adolfo-christian-mtab1j88"
+  },
+  {
+    "nombre": "Noroña Vinueza Oscar",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1,
+      2
+    ],
+    "diasEntrega": [
+      5
+    ],
+    "transito": 3,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Recibe pedido por la mañana",
+    "posDiaEnvio": 2,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "norona-vinueza-oscar-mtab3rix"
+  },
+  {
+    "nombre": "Nirsa S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "diasEntrega": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": true,
+    "nota": "Recibe Pedidos 21c/Mes, Despacha 29c/Mes",
+    "posDiaEnvio": 2,
+    "posDiaEntrega": 5,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "nirsa-s-a-mtab6vzl"
+  },
+  {
+    "nombre": "Unidal Ecuador S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      2
+    ],
+    "diasEntrega": [
+      4
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 2,
+    "posDiaEntrega": 4,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "unidal-ecuador-s-a-mtab6roz"
+  },
+  {
+    "nombre": "Virumec S.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      3,
+      4
+    ],
+    "diasEntrega": [
+      1,
+      3,
+      5
+    ],
+    "transito": 4,
+    "anticipacion": 0,
+    "estricto": true,
+    "gigante": false,
+    "nota": "Prep Miércoles ➔  Jueves Recibe Visita y recibe Pedidos",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "virumec-s-a-mtab9dp0"
+  },
+  {
+    "nombre": "Laboratorios Rene Chardon",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "diasEntrega": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "transito": 1,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "",
+    "posDiaEnvio": 4,
+    "posDiaEntrega": 1,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "laboratorios-rene-chardon-mtab97ro"
+  },
+  {
+    "nombre": "Agricola Industrial Molinos Amigables C.A.",
+    "frecuencia": "mensual",
+    "diasEnvio": [
+      3,
+      4,
+      5
+    ],
+    "diasEntrega": [
+      3,
+      4,
+      5
+    ],
+    "transito": 0,
+    "anticipacion": 0,
+    "estricto": false,
+    "gigante": false,
+    "nota": "Despacha el mismo Dia",
+    "posDiaEnvio": 3,
+    "posDiaEntrega": 3,
+    "sobrescribirEntrega": false,
+    "ordenEnvio": 0,
+    "ordenEntrega": 0,
+    "id": "agricola-industrial-molinos-amigables-c-a-mtabb406"
   }
 ]

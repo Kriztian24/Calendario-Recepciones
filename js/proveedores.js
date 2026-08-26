@@ -10,6 +10,7 @@
 
     /* id del proveedor en edición (null = modo alta) */
     let editandoId = null;
+    let estadoInicial = null;
 
     /* ----------------------------------------------------------
        Construcción del formulario del modal
@@ -73,12 +74,46 @@
         renderDayChecks('fDiasEntrega', v.diasEntrega);
         fillPosSelects(v);
         document.getElementById('modal').classList.remove('hidden');
+        // Guardar snapshot para detectar cambios sin guardar
+        estadoInicial = capturarEstado();
     };
+
+    /* capturarEstado(): snapshot del formulario para comparar */
+    function capturarEstado() {
+        return {
+            nombre: document.getElementById('fNombre').value,
+            frecuencia: document.getElementById('fFrecuencia').value,
+            transito: document.getElementById('fTransito').value,
+            anticipacion: document.getElementById('fAnticipacion').value,
+            estricto: document.getElementById('fEstricto').checked,
+            gigante: document.getElementById('fGigante').checked,
+            nota: document.getElementById('fNota').value,
+            diasEnvio: checkedVals('fDiasEnvio').join(','),
+            diasEntrega: checkedVals('fDiasEntrega').join(','),
+            posEnvio: document.getElementById('fPosEnvio').value,
+            posEntrega: document.getElementById('fPosEntrega').value
+        };
+    }
+
+    function hayCambios() {
+        if (!estadoInicial) return false;
+        try {
+            return JSON.stringify(capturarEstado()) !== JSON.stringify(estadoInicial);
+        } catch (e) { return false; }
+    }
+
+    function intentarCerrar() {
+        if (hayCambios()) {
+            if (!confirm('¿Tienes cambios sin guardar. ¿Seguro que quieres cerrar sin guardar?')) return;
+        }
+        cerrarModal();
+    }
 
     /* cerrarModal(): oculta el modal */
     function cerrarModal() {
         document.getElementById('modal').classList.add('hidden');
         editandoId = null;
+        estadoInicial = null;
     }
 
     /* ----------------------------------------------------------
@@ -143,11 +178,17 @@
        Listeners del modal
        ---------------------------------------------------------- */
     document.getElementById('btnAgregar').addEventListener('click', function () { App.openModal(null); });
-    document.getElementById('btnCancelar').addEventListener('click', cerrarModal);
+    document.getElementById('btnCancelar').addEventListener('click', intentarCerrar);
     document.getElementById('btnGuardar').addEventListener('click', guardar);
-    // Clic en el fondo oscuro cierra el modal.
+    // Clic en el fondo oscuro cierra el modal (con validación).
     document.getElementById('modal').addEventListener('click', function (e) {
-        if (e.target === this) cerrarModal();
+        if (e.target === this) intentarCerrar();
+    });
+    // Escape cierra el modal con validación
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !document.getElementById('modal').classList.contains('hidden')) {
+            intentarCerrar();
+        }
     });
     // Delegación: botones Editar / Eliminar de la tabla de proveedores.
     document.addEventListener('click', function (e) {
