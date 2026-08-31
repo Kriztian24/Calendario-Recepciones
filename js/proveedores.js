@@ -202,6 +202,7 @@
     // menú nativo del navegador).
     const ctxMenu = document.getElementById('ctxMenu');
     const ctxIr = document.getElementById('ctxIr');
+    const ctxControl = document.getElementById('ctxControl');
     let ctxSupplierId = null;
     let ctxSupplierTipo = null;
 
@@ -221,6 +222,14 @@
         // Texto dinámico según el calendario de origen
         ctxIr.textContent = ctxSupplierTipo === 'envio' ? '➡️ Ir a la recepción' : '⬅️ Ir al pedido';
         ctxIr.style.display = 'block';
+        if (!App.modoOperacion) {
+            ctxControl.style.display = 'none';
+        } else {
+            const pCtrl = App.getById(ctxSupplierId);
+            const esHecho = pCtrl ? App.esHechoEsteCiclo(pCtrl, ctxSupplierTipo) : false;
+            ctxControl.textContent = esHecho ? '↩ Desmarcar' : '✓ Marcar como hecho';
+            ctxControl.style.display = 'block';
+        }
         // Posiciona el menú junto al cursor, sin salirse de la ventana.
         ctxMenu.classList.remove('hidden');
         const mw = ctxMenu.offsetWidth || 170;
@@ -267,6 +276,15 @@
             fila.classList.add('dia-highlight');
             setTimeout(function () { fila.classList.remove('dia-highlight'); }, 5000);
         }
+    });
+
+    // Marcar/Desmarcar control por ciclo (misma opción, segundo clic revierte)
+    ctxControl.addEventListener('click', function () {
+        const id = ctxSupplierId;
+        const tipo = ctxSupplierTipo;
+        cerrarCtx();
+        if (!id || !tipo) return;
+        App.toggleHecho(id, tipo);
     });
 
     // Se cierra al hacer clic fuera, con Escape, al hacer scroll o al

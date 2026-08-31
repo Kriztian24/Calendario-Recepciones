@@ -59,6 +59,7 @@
         <div class="cal-toolbar">
             <input type="text" id="buscarProveedor" placeholder="🔍 Buscar proveedor en calendarios...">
             <label class="switch-vista" title="Invertir filas y columnas"><input type="checkbox" id="chkInvertir"> ↔ Invertir vista</label>
+            <label class="switch-vista" title="Modo operación: muestra bitácora y colores por ciclo"><input type="checkbox" id="chkModoOp"> Modo operación</label>
             <button class="btn" id="btnImprimir">🖨️ Imprimir / PDF</button>
             <button class="btn" id="btnCSV">⬇️ Exportar CSV</button>
         </div>
@@ -196,6 +197,7 @@
     <div id="ctxMenu" class="ctx-menu hidden">
         <button class="ctx-item" id="ctxEdit">✏️ Editar proveedor</button>
         <button class="ctx-item" id="ctxIr"></button>
+        <button class="ctx-item" id="ctxControl"></button>
     </div>
 
     <!-- Bloqueo por patrón (M) - pantalla completa -->

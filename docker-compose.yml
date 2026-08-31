@@ -1,0 +1,14 @@
+services:
+  calendario:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+    volumes:
+      # Persistencia de la base de datos central (se crea desde data-proveedores.json si no existe)
+      - ./db.json:/app/db.json
+      # Para desarrollo con recarga, añade también el código (descomenta):
+      # - .:/app
+      # - /app/node_modules
+    restart: unless-stopped

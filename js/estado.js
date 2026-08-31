@@ -46,6 +46,9 @@ App.normalize = function (p) {
     // reordenar con drag & drop dentro de una celda).
     p.ordenEnvio = p.ordenEnvio == null ? 0 : +p.ordenEnvio;
     p.ordenEntrega = p.ordenEntrega == null ? 0 : +p.ordenEntrega;
+    // Historial de control por ciclo (fecha, color, usuario)
+    p.historialEnvio = Array.isArray(p.historialEnvio) ? p.historialEnvio : [];
+    p.historialEntrega = Array.isArray(p.historialEntrega) ? p.historialEntrega : [];
     // Genera un id único si no existe.
     if (!p.id) p.id = App.slug(p.nombre || 'proveedor') + '-' + Date.now().toString(36);
     return p;
@@ -72,6 +75,19 @@ App.setVistaInvertida = function (v) {
     try { localStorage.setItem('vistaInvertida', JSON.stringify(App.vistaInvertida)); } catch (e) {}
     App.renderCalendario();
 };
+
+/* Modo operación: muestra colores/historial y permite marcar (switch en toolbar) */
+App.modoOperacion = (function () {
+    try { return JSON.parse(localStorage.getItem('modoOperacion') || 'false'); } catch (e) { return false; }
+})();
+App.setModoOperacion = function (v) {
+    App.modoOperacion = !!v;
+    try { localStorage.setItem('modoOperacion', JSON.stringify(App.modoOperacion)); } catch (e) {}
+    try { document.body.classList.toggle('modo-operacion', App.modoOperacion); } catch (e) {}
+    App.renderCalendario();
+};
+// Aplicar clase inicial si ya estaba activo (cuando el DOM esté listo se re-aplica)
+try { document.addEventListener('DOMContentLoaded', function () { document.body.classList.toggle('modo-operacion', !!App.modoOperacion); }); } catch (e) {}
 
 /* Filtro de semana quincenal (pills 1/3 y 2/4 en la cabecera de frecuencia).
    Vacío o ambos seleccionados = mostrar todo. Uno solo = filtrar. */
@@ -103,6 +119,107 @@ document.addEventListener('click', function (e) {
         App.toggleFiltroSemana(pill.dataset.semana);
     }
 });
+
+/* ------------------------------------------------------------
+   Control por ciclo (marcado con fecha, color y usuario)
+   ------------------------------------------------------------ */
+App.PALETA = ['#3b82f6', '#22c55e', '#f59e0b', '#a855f7', '#ec4899', '#14b8a6', '#f43f5e', '#6366f1'];
+
+App.semanaISO = function (date) {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+};
+
+App.quincenaGlobal = function (date) {
+    return Math.floor((App.semanaISO(date) - 1) / 2);
+};
+
+App.colorParaCiclo = function (ciclo) {
+    return App.PALETA[((ciclo % App.PALETA.length) + App.PALETA.length) % App.PALETA.length];
+};
+
+App.cicloActual = function (p, tipo) {
+    const freq = p ? p.frecuencia : 'semanal';
+    const hoy = new Date();
+    if (freq === 'semanal') return App.semanaISO(hoy);
+    if (freq.indexOf('quincenal') === 0) return App.quincenaGlobal(hoy);
+    // mensual: por proveedor, siguiente ciclo = historial length
+    const hist = tipo === 'envio' ? (p ? p.historialEnvio : []) : (p ? p.historialEntrega : []);
+    return hist ? hist.length : 0;
+};
+
+App.esHechoEsteCiclo = function (p, tipo) {
+    const hist = tipo === 'envio' ? p.historialEnvio : p.historialEntrega;
+    if (!hist || !hist.length) return false;
+    const ultimo = hist[hist.length - 1];
+    if (p.frecuencia === 'mensual') {
+        // Mensual: ventana de 10 días con el mismo color (desmarcado/marcado mismo color)
+        // Si el último fue hace <10 días, sigue en el mismo ciclo
+        const dUlt = new Date(ultimo.fecha);
+        const dHoy = new Date(); dHoy.setHours(0, 0, 0, 0); dUlt.setHours(0, 0, 0, 0);
+        const diff = Math.floor((dHoy - dUlt) / 86400000);
+        return diff >= 0 && diff < 10;
+    }
+    // Semanal / quincenal: comparar ciclo guardado con ciclo actual global
+    const cicloActual = App.cicloActual(p, tipo);
+    return ultimo.ciclo === cicloActual;
+};
+
+App.toggleHecho = function (id, tipo) {
+    const p = App.getById(id);
+    if (!p) return;
+    const histKey = tipo === 'envio' ? 'historialEnvio' : 'historialEntrega';
+    const usuario = (function () {
+        try {
+            let u = sessionStorage.getItem('usuarioActual');
+            if (u) return u;
+            u = localStorage.getItem('ultimoUsuario');
+            if (u) return u;
+        } catch (e) {}
+        return '';
+    })();
+    let nombre = usuario;
+    if (!nombre) {
+        nombre = prompt('Ingresa tu nombre para registrar quién marca:');
+        if (nombre === null) return;
+        nombre = String(nombre).trim();
+        if (!nombre) { App.toast('⚠️ Debes ingresar un nombre.'); return; }
+        try {
+            sessionStorage.setItem('usuarioActual', nombre);
+            localStorage.setItem('ultimoUsuario', nombre);
+        } catch (e) {}
+    }
+    // Si ya está hecho este ciclo, revertir (segundo clic)
+    if (App.esHechoEsteCiclo(p, tipo)) {
+        p[histKey].pop();
+        App.save();
+        App.renderCalendario();
+        App.toast('↩️ ' + p.nombre + ' desmarcado (revertido).');
+        return;
+    }
+    const ahora = new Date();
+    const fechaStr = ahora.toLocaleDateString('es-EC', { day: '2-digit', month: '2-digit' });
+    const fechaISO = ahora.toISOString().slice(0, 10);
+    let color;
+    let ciclo;
+    if (p.frecuencia === 'mensual') {
+        ciclo = p[histKey].length;
+        color = App.colorParaCiclo(ciclo);
+    } else if (p.frecuencia.indexOf('quincenal') === 0) {
+        ciclo = App.quincenaGlobal(ahora);
+        color = App.colorParaCiclo(ciclo);
+    } else {
+        ciclo = App.semanaISO(ahora);
+        color = App.colorParaCiclo(ciclo);
+    }
+    p[histKey].push({ fecha: fechaISO, fechaCorta: fechaStr, color: color, ciclo: ciclo, usuario: nombre });
+    App.save();
+    App.renderCalendario();
+    App.toast('✓ ' + p.nombre + ' marcado por ' + nombre + ' (' + fechaStr + ')');
+};
 
 /* loadLocal(): lee la caché de localStorage; si no existe (o el
    JSON está corrupto) usa la semilla incrustada. */

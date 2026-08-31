@@ -103,6 +103,23 @@ App.PATRON = "74153698";
     const msg = $("patronMsg");
     if (intento === patron) {
       setUnlocked(true);
+      // Pedir nombre la primera vez por sesión (si no hay usuario en esta sesión)
+      let necesitaNombre = false;
+      try { necesitaNombre = !sessionStorage.getItem('usuarioActual'); } catch (e) { necesitaNombre = true; }
+      if (necesitaNombre) {
+        let ultimo = null;
+        try { ultimo = localStorage.getItem('ultimoUsuario'); } catch (e) {}
+        const ingresado = prompt('Ingresa tu nombre para registrar quién marca:', ultimo || '');
+        if (ingresado !== null) {
+          const n = String(ingresado).trim();
+          if (n) {
+            try {
+              sessionStorage.setItem('usuarioActual', n);
+              localStorage.setItem('ultimoUsuario', n);
+            } catch (e) {}
+          }
+        }
+      }
       if (msg) {
         msg.textContent = "✓ Desbloqueado";
         msg.style.color = "#28a745";
@@ -191,11 +208,12 @@ App.PATRON = "74153698";
     // Recalcular líneas al redimensionar mientras se dibuja
     window.addEventListener("resize", drawLines);
 
-    // Botón sutil para cerrar sesión (limpia desbloqueo y vuelve a pedir patrón)
+    // Botón sutil para cerrar sesión (limpia desbloqueo y usuario, vuelve a pedir patrón)
     const btnLogout = $("btnLogout");
     if (btnLogout) {
       btnLogout.addEventListener("click", function () {
         setUnlocked(false);
+        try { sessionStorage.removeItem('usuarioActual'); } catch (e) {}
         clearSeq();
         showOverlay(true);
         const msg = $("patronMsg");

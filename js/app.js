@@ -72,6 +72,17 @@ document.getElementById('buscarProveedor').addEventListener('input', function ()
     });
 })();
 
+/* Switch modo operación (muestra bitácora y colores por ciclo) */
+(function () {
+    const chk = document.getElementById('chkModoOp');
+    if (!chk) return;
+    chk.checked = !!App.modoOperacion;
+    document.body.classList.toggle('modo-operacion', !!App.modoOperacion);
+    chk.addEventListener('change', function () {
+        App.setModoOperacion(this.checked);
+    });
+})();
+
 /* Imprimir / PDF: usa el diálogo de impresión del navegador. */
 document.getElementById('btnImprimir').addEventListener('click', function () {
     window.print();

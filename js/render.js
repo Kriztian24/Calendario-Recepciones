@@ -10,18 +10,24 @@ var App = window.App = window.App || {};
    gigante) y su nota/prep.
    ------------------------------------------------------------ */
 App.itemEnvio = function (p) {
-    let html = '<li class="supplier' + (p.gigante ? ' gigante' : '') +
-        '" draggable="true" data-id="' + p.id + '" data-tipo="envio" title="' + App.esc(p.nota) + '">';
-    // El nombre siempre va al inicio; la semana (Sem 1/3 o Sem 2/4)
-    // se muestra después como una mini etiqueta sutil.
+    const hecho = App.modoOperacion && App.esHechoEsteCiclo(p, 'envio');
+    const hist = p.historialEnvio;
+    const ultimo = hist && hist.length ? hist[hist.length - 1] : null;
+    let cls = 'supplier' + (p.gigante ? ' gigante' : '') + (hecho ? ' hecho' : '');
+    let style = '';
+    if (hecho && ultimo) {
+        style = ' style="background:' + ultimo.color + '18; border-left:3px solid ' + ultimo.color + '"';
+    }
+    let html = '<li class="' + cls + '" draggable="true" data-id="' + p.id + '" data-tipo="envio" title="' + App.esc(p.nota) + '"' + style + '>';
     html += '<span class="sup-nombre">' + App.esc(p.nombre) + '</span>';
     if (App.colFor(p.frecuencia) === 'quincenal') {
         html += ' <span class="sem-label">' + App.freqLabel(p) + '</span>';
     }
-    // Anotación: día de llegada (se calcula solo con envío + tránsito).
     html += ' <span class="llegada">(' + App.abbrDia(p.posDiaEntrega, p.posDiaEnvio) + ')</span>';
     if (p.estricto) html += ' <span class="estricto">*Estricto</span>';
+    if (hecho) html += ' <span class="hecho-badge">✓</span>';
     if (p.nota) html += '<span class="prep">' + App.esc(p.nota) + '</span>';
+    html += App.htmlHistorial(p, 'envio');
     html += '</li>';
     return html;
 };
@@ -32,20 +38,26 @@ App.itemEnvio = function (p) {
    recepción fue movida a mano, un botón para volver a "auto".
    ------------------------------------------------------------ */
 App.itemRecepcion = function (p) {
-    let html = '<li class="supplier' + (p.gigante ? ' gigante' : '') +
-        '" draggable="true" data-id="' + p.id + '" data-tipo="entrega" title="' + App.esc(p.nota) + '">';
-    // El nombre siempre va al inicio; la semana (Sem 1/3 o Sem 2/4)
-    // se muestra después como una mini etiqueta sutil.
+    const hecho = App.modoOperacion && App.esHechoEsteCiclo(p, 'entrega');
+    const hist = p.historialEntrega;
+    const ultimo = hist && hist.length ? hist[hist.length - 1] : null;
+    let cls = 'supplier' + (p.gigante ? ' gigante' : '') + (hecho ? ' hecho' : '');
+    let style = '';
+    if (hecho && ultimo) {
+        style = ' style="background:' + ultimo.color + '18; border-left:3px solid ' + ultimo.color + '"';
+    }
+    let html = '<li class="' + cls + '" draggable="true" data-id="' + p.id + '" data-tipo="entrega" title="' + App.esc(p.nota) + '"' + style + '>';
     html += '<span class="sup-nombre">' + App.esc(p.nombre) + '</span>';
     if (App.colFor(p.frecuencia) === 'quincenal') {
         html += ' <span class="sem-label">' + App.freqLabel(p) + '</span>';
     }
-    // Anotación: día de envío correspondiente a esta recepción.
     html += ' <span class="llegada">(' + App.abbrDia(p.posDiaEnvio, p.posDiaEntrega) + ')</span>';
     if (p.sobrescribirEntrega) {
         html += '<span class="override-badge">🔓 manual</span>' +
             '<button class="re-link" data-id="' + p.id + '" draggable="false">↺ auto</button>';
     }
+    if (hecho) html += ' <span class="hecho-badge">✓</span>';
+    html += App.htmlHistorial(p, 'entrega');
     html += '</li>';
     return html;
 };
@@ -341,6 +353,17 @@ App.chipsEditables = function (p, field) {
         const activo = dias.indexOf(d.idx) !== -1 ? ' activo' : '';
         return '<button class="chip-edit' + activo + '" data-id="' + p.id + '" data-field="' + field + '" data-dia="' + d.idx + '" title="' + d.nombre + '">' + d.abbr + '</button>';
     }).join('') + '</span>';
+};
+
+App.htmlHistorial = function (p, tipo) {
+    if (!App.modoOperacion) return '';
+    const hist = tipo === 'envio' ? p.historialEnvio : p.historialEntrega;
+    if (!hist || !hist.length) return '';
+    const ultimo = hist[hist.length - 1];
+    const hecho = App.esHechoEsteCiclo(p, tipo);
+    const cls = hecho ? 'historial hecho-hist' : 'historial previo-hist';
+    const color = hecho ? ultimo.color : ultimo.color + '99';
+    return '<span class="' + cls + '" style="color:' + color + '">' + App.esc(ultimo.fechaCorta) + ' ' + App.esc(ultimo.usuario) + '</span>';
 };
 
 /* ------------------------------------------------------------
